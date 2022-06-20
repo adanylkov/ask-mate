@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ask Mate</title>
+</head>
+<body> 
+    <h1>List of questions</h1><br>
+
+    <!-- <a href="{{ url_for('question') }}">Add new User question</a> -->
+    {% if questions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>User question</th>
+                    <th>Acceptance criteria</th>
+                    <th>Business value</th>
+                    <th>Estimation</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                    <tr>
+                            <td>{{ question['id']|safe }}</td>
+                            <td><a href="{{ url }}">{{ question['title']|safe }}</a></td>
+                            <td>{{ question['user_question']|safe }}</td>
+                            <td>{{ question['acceptance_criteria']|safe }}</td>
+                            <td>{{ question['business_value']|safe }}</td>
+                            <td>{{ question['estimation']|safe }}</td>
+                            <td>{{ question['status']|safe }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> {% else %}
+        <p>There are no questions</p>
+    {% endif %}
+</body>
+</html>
