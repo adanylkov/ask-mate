@@ -1,3 +1,4 @@
+from logging import debug
 from flask import Flask, render_template, request, redirect
 import data_manager
 import util
@@ -36,20 +37,7 @@ def ask_question():
         return render_template("ask-question.html")
 
 
-@app.route("/add-question", methods=["GET", "POST"])
-def ask_question():
-    if request.method == "POST":
-        title = request.form.get("title")
-        message = request.form.get("message")
-        my_list = {'id': 81, 'submission_time': 123123, 'view_number': 1, 'vote_number': 2, 'title': title,
-                   'message': message, 'image': 'None'}
-        add_data_to_file("question.csv", my_list, connection.QUESTION_HEADER)
-        return render_template("add-question.html")
-
-
 if __name__ == "__main__":
     app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=True,
+        debug=True
     )
