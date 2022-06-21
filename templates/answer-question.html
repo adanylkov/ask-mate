@@ -5,14 +5,13 @@
     <title>Ask mate - answer a question</title>
 </head>
 <body> 
+    {%- from "question.html" import show_question %}
+    {{ show_question(question) }}
     <h1>Answer a question</h1><br>
-    <form action="/answer-question" method="post">
-        Title <input name="title" required><br>
-        <label>Question:</label><br>
-        <textarea name="message" rows="20" cols="60" placeholder="Insert a question" required></textarea><br>
-        <button type="submit">Submit my question</button>
-
-
+    <form action="/question/{{ question['id'] }}/new-answer" method="post">
+        <label>Answer:</label><br>
+        <textarea name="message" rows="20" cols="60" placeholder="Insert an answer" required></textarea><br>
+        <button type="submit">Submit my answer</button>
     </form>
 </body>
 </html>

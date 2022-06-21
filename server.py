@@ -2,6 +2,7 @@ from logging import debug
 from flask import Flask, render_template, request, redirect
 import data_manager
 import util
+from rich import print
 
 app = Flask(__name__)
 
@@ -13,14 +14,20 @@ def display_question(question_id):
     answers = data_manager.answers_by_question_id(question_id)
     for ans in answers:
         ans['submission_time'] = util.convert_time(ans['submission_time'])
-    return render_template("question.html", question=question, answers=answers)
+    return render_template("question-template.html", question=question, answers=answers)
 
 
 @app.route("/")
 @app.route("/list")
 def question_list():
     question_list = data_manager.questions()
-    question_list.sort(key=util.sort_by_time, reverse=True)
+
+
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'desc')
+
+    question_list.sort(key=lambda question: util.sort_by(question, order_by), reverse=order_direction=='desc') 
+
     for qst in question_list:
         qst['submission_time'] = util.convert_time(qst['submission_time'])
     return render_template("list.html", questions=question_list)
@@ -36,6 +43,17 @@ def ask_question():
     elif request.method == "GET":
         return render_template("ask-question.html")
 
+    
+@app.route("/question/<int:question_id>/new-answer", methods=["GET", "POST"])
+def get_answer(question_id):
+    if request.method == "GET":
+        question = data_manager.get_question_by_id(question_id)
+        question['submission_time'] = util.convert_time(question['submission_time'])
+        return render_template("answer-question.html", question=question)
+    else:
+        message = request.form.get("message")
+        data_manager.add_answer(question_id=question_id, message=message)
+        return redirect(f"/question/{question_id}", 301)
 
 if __name__ == "__main__":
     app.run(
