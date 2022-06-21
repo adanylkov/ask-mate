@@ -20,8 +20,8 @@ def display_question(question_id):
 @app.route("/list")
 def question_list():
     question_list = data_manager.questions()
-    print(sorted(question_list, key=util.sort_by_time, reverse=True))
-    for qst in sorted(question_list, key=util.sort_by_time, reverse=True):
+    question_list.sort(key=util.sort_by_time, reverse=False)
+    for qst in question_list:
         qst['submission_time'] = util.convert_time(qst['submission_time'])
     return render_template("list.html", questions=question_list)
 
