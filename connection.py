@@ -25,3 +25,13 @@ def add_data_to_file(file_name, data, data_header):
     with open(f"sample_data/{file_name}", 'a+') as file:
         writer = csv.DictWriter(file, data_header)
         writer.writerow(data)
+        
+def write_last_id(file_name, id):
+    with open(f"data/{file_name}", 'w') as file:
+        file.write(str(id))
+    
+        
+def read_last_id(file_name):
+    with open(f"data/{file_name}", 'r') as file:
+        return file.read()
+    

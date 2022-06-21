@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ask Mate</title>
+</head>
+<body> 
+    <form action="/ask-question">
+        <input type="submit" value="Add a question" />
+    </form>
+
+    <h1>List of questions</h1><br>
+    
+
+    {% if questions %}
+        {% for question in questions %}
+        <!--id,submission_time,view_number,vote_number,title,message,image-->
+        <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
+        <h3>{{question["message"]}}</h3>
+        <p>{{question["image"]}}</p> 
+        <p>Submission time: {{question["submission_time"]}}</p>
+        <p>View number: {{question["view_number"]}} Vote number: {{question["vote_number"]}} </p><br>
+        
+
+
+        {% endfor %}
+        {% else %}
+        <p>There are no questions</p>
+    {% endif %}
+</body>
+</html>
