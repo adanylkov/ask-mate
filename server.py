@@ -1,8 +1,7 @@
-from logging import debug
 from flask import Flask, render_template, request, redirect
+
 import data_manager
 import util
-from rich import print
 
 app = Flask(__name__)
 
@@ -43,7 +42,7 @@ def ask_question():
     elif request.method == "GET":
         return render_template("ask-question.html")
 
-    
+
 @app.route("/question/<int:question_id>/new-answer", methods=["GET", "POST"])
 def get_answer(question_id):
     if request.method == "GET":
@@ -55,7 +54,16 @@ def get_answer(question_id):
         data_manager.add_answer(question_id=question_id, message=message)
         return redirect(f"/question/{question_id}", 301)
 
+
+@app.route("/question/<int:question_id>/delete")
+def del_question(question_id):
+    data_manager.del_question(question_id)
+    return redirect("/")
+
+
 if __name__ == "__main__":
     app.run(
+        host='0.0.0.0',
+        port=5000,
         debug=True
     )
