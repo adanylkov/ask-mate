@@ -1,4 +1,5 @@
 import connection
+import util
 
 
 def get_question_by_id(id):
@@ -13,6 +14,11 @@ def questions():
     questions = connection.read_data_from_file('question.csv')
     
     return questions
+
+def add_question(title, message):
+    #id,submission_time,view_number,vote_number,title,message,image
+    question = {"id": util.create_id(), "submission_time": util.make_timestamp(), "view_number": 0, "vote_number": 0, "title": title, "message": message, "image": None}
+    connection.add_data_to_file("questions.csv", question, connection.QUESTION_HEADER)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,10 @@ def convert_time(timestamp, format="%d %B %Y, %H:%M"):
 
 
 def make_timestamp():
+    
+    pass
+
+def create_id():
     pass
 
 def sort_by_time(question):

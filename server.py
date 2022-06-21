@@ -1,5 +1,5 @@
 from logging import debug
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import data_manager
 import util
 
@@ -25,6 +25,16 @@ def question_list():
         qst['submission_time'] = util.convert_time(qst['submission_time'])
     return render_template("list.html", questions=question_list)
 
+
+@app.route("/ask-question", methods=["GET", "POST"])
+def ask_question():
+    if request.method=="POST":
+        title = request.form.get("title")
+        message = request.form.get("message")
+        
+        return "post ask-question.html"
+    elif request.method=="GET":
+        return render_template("ask-question.html")
 
 if __name__ == "__main__":
     app.run(
