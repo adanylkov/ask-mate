@@ -19,7 +19,10 @@ def add_question(title, message):
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
-
+def add_answer(question_id, message):
+    #id,submission_time,vote_number,question_id,message,image
+    answer = {"id": util.create_id(is_question=False), "submission_time": util.make_timestamp(), "vote_number": 0, "question_id": question_id, "message": message, "image": None}
+    connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
 
 if __name__ == "__main__":
     print(questions()[0])

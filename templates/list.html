@@ -5,6 +5,27 @@
     <title>Ask Mate</title>
 </head>
 <body> 
+
+    <h3>Choose sorting options</h3>
+    <form action="/list">
+        <select name="order_by">
+            <option value="title">Title</option>
+            <option value="submission_time">Submission time</option>
+            <option value="message">Message</option>
+            <option value="number_of_views">Number of views</option>
+            <option value="number_of_votes">Number of votes</option>
+        </select>
+        
+        <select name="order_direction">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button type="submit">Sort</button>
+    </form>
+
+    <br>
+    <br>
+
     <form action="/ask-question">
         <input type="submit" value="Add a question" />
     </form>

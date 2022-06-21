@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-
-<body>
-    <div class="question">
+{% macro show_question(question) %}
         <h2>Question:</h2>
         <h3>{{ question['title'] }}</h3>
         <p>
@@ -15,20 +6,4 @@
         </p>
         <small>Posted on: {{ question['submission_time'] }}</small>
         <hr>
-    </div>
-    {% if answers %}
-        <div class="answers">
-            <h2>Answers:</h2>
-            {% for answer in answers %}
-            <p>{{ answer['message'] }}</p>
-            <small>Posted on: {{ answer['submission_time'] }}</small>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <form action="/list">
-        <input type="submit" value="Return to home" />
-    </form>
-</body>
-
-</html>
+{% endmacro %}

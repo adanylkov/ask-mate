@@ -8,15 +8,8 @@
 
 <body>
     <div class="question">
-        {% block question %}
-        <h2>Question:</h2>
-        <h3>{{ question['title'] }}</h3>
-        <p>
-            {{ question['message'] }}
-        </p>
-        <small>Posted on: {{ question['submission_time'] }}</small>
-        <hr>
-    {% endblock %}
+        {%- from "question.html" import show_question %}
+        {{ show_question(question) }}
     </div>
     {% if answers %}
         <div class="answers">
@@ -27,6 +20,15 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    <br>
+    
+
+    <form action="/question/{{ question['id'] }}/new-answer">
+        <input type="submit" value="Add new answer" />
+    </form>
+
+    <br>
 
     <form action="/list">
         <input type="submit" value="Return to home" />
