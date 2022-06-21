@@ -10,7 +10,7 @@
     {% if questions %}
         {% for question in questions %}
         <!--id,submission_time,view_number,vote_number,title,message,image-->
-        <h2>{{question["title"]}}</h2>
+        <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
         <h3>{{question["message"]}}</h3>
         <p>{{question["image"]}}</p> 
         <p>Submission time: {{question["submission_time"]}}</p>
