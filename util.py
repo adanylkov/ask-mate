@@ -1,4 +1,6 @@
 import time
+import datetime
+import connection
 
 
 def convert_time(timestamp, format="%d %B %Y, %H:%M"):
@@ -7,11 +9,13 @@ def convert_time(timestamp, format="%d %B %Y, %H:%M"):
 
 
 def make_timestamp():
-    
-    pass
+    return int(time.time())
+
 
 def create_id():
-    pass
+    id = int(connection.read_last_id("last_id.txt"))+1
+    connection.write_last_id("last_id.txt", id)
+    return id
 
 def sort_by_time(question):
     submission_time = int(question["submission_time"])
@@ -19,4 +23,5 @@ def sort_by_time(question):
 
 
 if __name__ == "__main__":
-    print(convert_time(1493368154))
+    print(convert_time(make_timestamp()))
+    print(make_timestamp())

@@ -7,9 +7,9 @@
 <body> 
     <h1>Ask a question</h1><br>
     <form action="/ask-question" method="post">
-        Title <input name="title"><br>
+        Title <input name="title" required><br>
         <label>Question:</label><br>
-        <textarea name="message" rows="20" cols="60" placeholder="Insert a question"></textarea><br>
+        <textarea name="message" rows="20" cols="60" placeholder="Insert a question" required></textarea><br>
         <button type="submit">Submit my question</button>
 
 

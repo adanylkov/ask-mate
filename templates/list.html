@@ -5,7 +5,12 @@
     <title>Ask Mate</title>
 </head>
 <body> 
+    <form action="/ask-question">
+        <input type="submit" value="Add a question" />
+    </form>
+
     <h1>List of questions</h1><br>
+    
 
     {% if questions %}
         {% for question in questions %}

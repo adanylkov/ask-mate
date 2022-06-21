@@ -1,7 +1,8 @@
 from logging import debug
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import data_manager
 import util
+
 
 app = Flask(__name__)
 
@@ -31,10 +32,12 @@ def ask_question():
     if request.method=="POST":
         title = request.form.get("title")
         message = request.form.get("message")
-        
-        return "post ask-question.html"
+        id = data_manager.add_question(title, message)
+        return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")
+    
+
 
 if __name__ == "__main__":
     app.run(
