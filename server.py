@@ -76,6 +76,12 @@ def del_question(question_id):
     return redirect("/")
 
 
+@app.route("/answer/<int:answer_id>/delete")
+def del_answer(answer_id):
+    question_id = 7
+    return redirect(f"/question/{question_id}")
+
+
 @app.route('/image', methods=['GET', 'POST'])
 def image():
     if request.method == 'POST':
