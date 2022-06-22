@@ -79,7 +79,7 @@ def del_question(question_id):
 @app.route("/answer/<int:answer_id>/delete")
 def del_answer(answer_id):
     question_id = data_manager.del_answer(answer_id)
-    return redirect(f"/question/{question_id}")
+    return redirect(f"/question/{question_id}", 301)
 
 
 @app.route('/image', methods=['GET', 'POST'])
