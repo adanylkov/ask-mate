@@ -37,11 +37,17 @@ def add_answer(question_id, message):
     connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
 
 def del_question(question_id):
+    all_answers = answers()
     all_questions = questions()
     for dicts in all_questions:
         if dicts["id"] == str(question_id):
             all_questions.pop(all_questions.index(dicts))
     connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
+    for dicts in all_answers:
+        if dicts["question_id"] == str(question_id):
+            all_answers.pop(all_answers.index(dicts))
+    connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
+
 
 def del_answer(answer_id):
     all_answers = answers()
