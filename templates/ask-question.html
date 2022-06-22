@@ -7,12 +7,10 @@
 <body> 
     <h1>Ask a question</h1><br>
     <form action="/ask-question" method="post">
-        Title <input name="title" required><br>
+        Title <input name="title" value="{% block question_title %}{% endblock %}" required><br>
         <label>Question:</label><br>
-        <textarea name="message" rows="20" cols="60" placeholder="Insert a question" required></textarea><br>
+        <textarea name="message" rows="20" cols="60" placeholder="Insert a question" required>{% block question_body %}{% endblock %}</textarea><br>
         <button type="submit">Submit my question</button>
-
-
     </form>
 </body>
 </html>

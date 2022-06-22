@@ -14,8 +14,16 @@ def questions():
     questions = connection.read_data_from_file('question.csv')
     return questions
 
-def add_question(title, message):
-    question = {"id": util.create_id(), "submission_time": util.make_timestamp(), "view_number": 0, "vote_number": 0, "title": title, "message": message, "image": None}
+def add_question(title, message, submission_time = None, view_number = None, vote_number = None, image = None):
+    question = {
+            "id": util.create_id(),
+            "submission_time": util.make_timestamp() if not submission_time else submission_time,
+            "view_number": 0 if not view_number else view_number,
+            "vote_number": 0 if not vote_number else vote_number,
+            "title": title,
+            "message": message,
+            "image": None if not image else image
+            }
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
@@ -30,6 +38,17 @@ def del_question(question_id):
         if dicts["id"] == str(question_id):
             all_questions.pop(all_questions.index(dicts))
     connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
+
+def edit_question(question):
+    del_question(question['id'])
+    id = add_question(
+            title=question['title'],
+            message=question['message'],
+            view_number=question['view_number'],
+            vote_number=question['vote_number'],
+            image=question['image']
+            )
+    return id
 
 if __name__ == "__main__":
     print(questions()[0])

@@ -102,6 +102,21 @@ def image():
         return render_template("image.html")
 
 
+@app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    question = data_manager.get_question_by_id(question_id)
+    if request.method == 'GET':
+        return render_template('edit-question.html', question=question)
+    else:
+        title = request.form.get("title")
+        message = request.form.get("message")
+        question['title'] = title
+        question['message'] = message
+        id = data_manager.edit_question(question)
+        return redirect(url_for(display_question(id)), 301)
+ 
+
+
 if __name__ == "__main__":
     app.run(
         debug = True
