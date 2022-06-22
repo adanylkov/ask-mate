@@ -122,6 +122,17 @@ def edit_question(question_id):
         id = data_manager.edit_question(question)
         return redirect(url_for('display_question', question_id=id), 301)
  
+#moja część
+@app.route('/question/<question_id>/vote-up')
+def vote_up(question_id):
+    data_manager.vote_up(question_id)
+    return redirect("/", 301)
+
+@app.route('/question/<question_id>/vote-down')
+def vote_up(question_id):
+    data_manager.vote_down(question_id)
+    return redirect("/", 301)
+
 
 
 if __name__ == "__main__":
