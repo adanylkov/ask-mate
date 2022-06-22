@@ -4,6 +4,7 @@ import data_manager
 import util
 from rich import print
 
+
 app = Flask(__name__)
 
 
@@ -15,7 +16,6 @@ def display_question(question_id):
     for ans in answers:
         ans['submission_time'] = util.convert_time(ans['submission_time'])
     return render_template("question-template.html", question=question, answers=answers)
-
 
 @app.route("/")
 @app.route("/list")
@@ -35,12 +35,12 @@ def question_list():
 
 @app.route("/ask-question", methods=["GET", "POST"])
 def ask_question():
-    if request.method == "POST":
+    if request.method=="POST":
         title = request.form.get("title")
         message = request.form.get("message")
         id = data_manager.add_question(title, message)
         return redirect(f"/question/{id}", 301)
-    elif request.method == "GET":
+    elif request.method=="GET":
         return render_template("ask-question.html")
 
     
@@ -57,5 +57,6 @@ def get_answer(question_id):
 
 if __name__ == "__main__":
     app.run(
-        debug=True
+        debug = True
     )
+    
