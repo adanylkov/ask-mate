@@ -43,6 +43,7 @@ def edit_question(question):
     del_question(question['id'])
     id = add_question(
             title=question['title'],
+            submission_time=question['submission_time'],
             message=question['message'],
             view_number=question['view_number'],
             vote_number=question['vote_number'],

@@ -106,14 +106,15 @@ def image():
 def edit_question(question_id):
     question = data_manager.get_question_by_id(question_id)
     if request.method == 'GET':
-        return render_template('edit-question.html', question=question)
+        return render_template('edit-question.html', question=question, action=f'/question/{question_id}/edit')
     else:
+        print("in edit_question POST")
         title = request.form.get("title")
         message = request.form.get("message")
         question['title'] = title
         question['message'] = message
         id = data_manager.edit_question(question)
-        return redirect(url_for(display_question(id)), 301)
+        return redirect(url_for('display_question', question_id=id), 301)
  
 
 
