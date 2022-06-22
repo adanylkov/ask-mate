@@ -73,12 +73,12 @@ def get_answer(question_id):
 @app.route("/question/<int:question_id>/delete")
 def del_question(question_id):
     data_manager.del_question(question_id)
-    return redirect("/")
+    return redirect("/", 301)
 
 
 @app.route("/answer/<int:answer_id>/delete")
 def del_answer(answer_id):
-    question_id = 7
+    question_id = data_manager.del_answer(answer_id)
     return redirect(f"/question/{question_id}")
 
 

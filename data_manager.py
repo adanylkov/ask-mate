@@ -14,6 +14,10 @@ def questions():
     questions = connection.read_data_from_file('question.csv')
     return questions
 
+def answers():
+    answers = connection.read_data_from_file('answer.csv')
+    return answers
+
 def add_question(title, message, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
             "id": util.create_id(),
@@ -38,6 +42,16 @@ def del_question(question_id):
         if dicts["id"] == str(question_id):
             all_questions.pop(all_questions.index(dicts))
     connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
+
+def del_answer(answer_id):
+    all_answers = answers()
+    for dicts in all_answers:
+        if dicts["id"] == str(answer_id):
+            all_answers.pop(all_answers.index(dicts))
+            question_id = dicts["question_id"]
+    connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
+    return question_id
+
 
 def edit_question(question):
     del_question(question['id'])
