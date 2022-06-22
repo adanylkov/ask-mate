@@ -26,7 +26,9 @@ def add_answer(question_id, message):
 
 def del_question(question_id):
     all_questions = questions()
-    del all_questions[question_id-1]
+    for dicts in all_questions:
+        if dicts["id"] == str(question_id):
+            all_questions.pop(all_questions.index(dicts))
     connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
-from rich import print
-from logging import debug
+#from rich import print
+#from logging import debug
 from flask import Flask, render_template, request, redirect, flash, url_for
-from flask import send_from_directory
+#from flask import send_from_directory
 from werkzeug.utils import secure_filename
 import data_manager
 import util
@@ -74,7 +74,6 @@ def get_answer(question_id):
 def del_question(question_id):
     data_manager.del_question(question_id)
     return redirect("/")
-
 
 
 @app.route('/image', methods=['GET', 'POST'])
