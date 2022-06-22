@@ -1,8 +1,8 @@
-from logging import debug
+#from logging import debug
 from flask import Flask, render_template, request, redirect
 import data_manager
 import util
-from rich import print
+#from rich import print
 
 
 app = Flask(__name__)
@@ -54,6 +54,13 @@ def get_answer(question_id):
         message = request.form.get("message")
         data_manager.add_answer(question_id=question_id, message=message)
         return redirect(f"/question/{question_id}", 301)
+
+
+@app.route("/question/<int:question_id>/delete")
+def del_question(question_id):
+    data_manager.del_question(question_id)
+    return redirect("/")
+
 
 if __name__ == "__main__":
     app.run(
