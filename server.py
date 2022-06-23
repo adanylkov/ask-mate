@@ -26,10 +26,8 @@ def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     answers = data_manager.answers_by_question_id(question_id)
-    print(answers)
     for ans in answers:
         ans['submission_time'] = util.convert_time(ans['submission_time'])
-    print(answers)
     return render_template("question-template.html", question=question, answers=answers)
 
 
@@ -81,11 +79,12 @@ def del_question(question_id):
 @app.route("/answer/<int:answer_id>/delete")
 def del_answer(answer_id):
     question_tupla = data_manager.del_answer(answer_id)
-    question_id = question_tupla[0]
-    index = question_tupla[1]
-    print("TUTAJ",question_id)
-    print("TUTAJ INDEX",index)
-    return redirect(f"/question/{question_id}", 301)
+    if question_tupla:
+        question_id = question_tupla[0]
+        #index = question_tupla[1]
+        return redirect(f"/question/{question_id}", 301)
+    else:
+        return redirect(url_for('question_list'))
 
 
 @app.route('/image', methods=['GET', 'POST'])
@@ -120,7 +119,6 @@ def edit_question(question_id):
     if request.method == 'GET':
         return render_template('edit-question.html', question=question, action=f'/question/{question_id}/edit')
     else:
-        print("in edit_question POST")
         title = request.form.get("title")
         message = request.form.get("message")
         question['title'] = title
@@ -135,7 +133,7 @@ def vote_up(question_id):
     vote_number = int(question['vote_number'])
     updated_vote_number = data_manager.vote_up(vote_number)
     question['vote_number'] = updated_vote_number
-    id = data_manager.edit_question(question)
+    data_manager.edit_question(question)
     return redirect("/", 301)
 
 @app.route('/question/<int:question_id>/vote-down')
@@ -144,7 +142,7 @@ def vote_down(question_id):
     vote_number = int(question['vote_number'])
     updated_vote_number = data_manager.vote_down(vote_number)
     question['vote_number'] = updated_vote_number
-    id = data_manager.edit_question(question)
+    data_manager.edit_question(question)
     return redirect("/", 301)
 
 #answer
