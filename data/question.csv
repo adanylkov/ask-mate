@@ -12,3 +12,4 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)",
+28,1655989936,5,0,What is best IDE?,Best IDE for WEB programming?,images/27_.png
