@@ -6,6 +6,10 @@ def get_question_by_id(id):
     questions = connection.read_data_from_file('question.csv')
     return list(filter(lambda question: question['id'] == str(id), questions)).pop()
 
+def get_answer_by_id(id):
+    answers = connection.read_data_from_file('answer.csv')
+    return list(filter(lambda answer: answer['id'] == str(id), answers)).pop()
+
 def answers_by_question_id(question_id):
     answers = connection.read_data_from_file('answer.csv')
     return list(filter(lambda answer: answer['question_id'] == str(question_id), answers))
@@ -31,10 +35,17 @@ def add_question(title, message, submission_time = None, view_number = None, vot
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
-def add_answer(question_id, message):
+def add_answer(message, question_id, submission_time = None, vote_number = None, image = None):
     #id,submission_time,vote_number,question_id,message,image
-    answer = {"id": util.create_id(is_question=False), "submission_time": util.make_timestamp(), "vote_number": 0, "question_id": question_id, "message": message, "image": None}
+    answer = {
+            "question_id": question_id,
+            "id": util.create_id(), 
+            "submission_time": util.make_timestamp() if not submission_time else submission_time, 
+            "vote_number": 0 if not vote_number else vote_number, 
+            "message": message, 
+            "image": None if not image else image}
     connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
+
 
 def del_question(question_id):
     all_answers = answers()
@@ -71,6 +82,17 @@ def edit_question(question):
             )
     return id
 
+
+def edit_answer(answer):
+    del_answer(answer['id'])
+    add_answer(
+        question_id=answer['question_id'],
+        submission_time=answer['submission_time'],
+        message=answer['message'],
+        vote_number=answer['vote_number'],
+        image=answer['image']
+        )
+    return answer['question_id']
 
 def vote_up(vote_number):
     if(vote_number):

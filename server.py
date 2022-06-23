@@ -141,6 +141,26 @@ def vote_down(question_id):
     id = data_manager.edit_question(question)
     return redirect("/", 301)
 
+#answer
+@app.route('/answer/<int:answer_id>/vote-up')
+def vote_up_answer(answer_id):
+    answer = data_manager.get_answer_by_id(answer_id)
+    print(answer)
+    vote_number = int(answer['vote_number'])
+    updated_vote_number = data_manager.vote_up(vote_number)
+    answer['vote_number'] = updated_vote_number
+    id = data_manager.edit_answer(answer)
+    return redirect(f"/question/{id}", 301)
+
+
+@app.route('/answer/<int:answer_id>/vote-down')
+def vote_down_answer(answer_id):
+    answer = data_manager.get_answer_by_id(answer_id)
+    vote_number = int(answer['vote_number'])
+    updated_vote_number = data_manager.vote_down(vote_number)
+    answer['vote_number'] = updated_vote_number
+    id = data_manager.edit_answer(answer)
+    return redirect(f"/question/{id}", 301)
 
 
 if __name__ == "__main__":
