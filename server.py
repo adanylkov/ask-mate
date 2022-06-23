@@ -50,7 +50,9 @@ def ask_question():
         message = request.form.get("message")
         id = util.create_id()
         image_name = image(question_id=id)
-        data_manager.add_question(title, message, id=id, image=f"images/{image_name}")
+        if image_name:
+            image_name = f"images/{image_name}"
+        data_manager.add_question(title, message, id=id, image=image_name)
         return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")
@@ -66,7 +68,9 @@ def get_answer(question_id):
         message = request.form.get("message")
         answer_id = util.create_id(is_question=False)
         image_name = image(question_id=question_id, answer_id=str(answer_id))
-        data_manager.add_answer(question_id=question_id, message=message, id=answer_id, image=f"images/{image_name}")
+        if image_name:
+            image_name = f"images/{image_name}"
+        data_manager.add_answer(question_id=question_id, message=message, id=answer_id, image=image_name)
         return redirect(f"/question/{question_id}", 301)
 
 
