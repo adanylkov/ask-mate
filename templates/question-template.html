@@ -22,7 +22,7 @@
                 <br>
             {% endif %}
             <small>Posted on: {{ answer['submission_time'] }}</small><br>
-            <form action="/answer/{{ answer['id'] }}/delete">
+            <form action="/answer/{{ answer['id'] }}/delete" method="post">
                 <input type="submit" value="Delete the answer" />
             </form><br>
         {% endfor %}
@@ -45,7 +45,7 @@
 
     <br>
 
-    <form action="/question/{{ question['id'] }}/delete">
+    <form action="/question/{{ question['id'] }}/delete" method="post">
         <input type="submit" value="Delete a question" />
     </form>
 
