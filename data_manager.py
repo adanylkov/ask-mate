@@ -1,5 +1,17 @@
+from flask import url_for
 import connection
 import util
+import os
+import re
+
+
+def get_image_by_id(question_id, answer_id = ''):
+    images = os.listdir(os.path.join(os.curdir, 'images'))
+    image_name = f"{question_id}_{answer_id}"
+    find = re.compile(f"{image_name}.*")
+    match = list(filter(lambda im: re.search(find, im), images))
+    if match:
+        return match.pop()
 
 
 def get_question_by_id(id):
@@ -18,9 +30,9 @@ def answers():
     answers = connection.read_data_from_file('answer.csv')
     return answers
 
-def add_question(title, message, submission_time = None, view_number = None, vote_number = None, image = None):
+def add_question(title, message, id = None, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
-            "id": util.create_id(),
+            "id": util.create_id() if not id else id,
             "submission_time": util.make_timestamp() if not submission_time else submission_time,
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
@@ -59,10 +71,20 @@ def del_answer(answer_id):
     return question_id
 
 
+def edit_answers_question_id(question_id, new_id):
+    all_answers = connection.read_data_from_file('answer.csv')
+    for answer in all_answers:
+        if answer['question_id'] == str(question_id):
+            answer['question_id'] = str(new_id)
+    connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
+
+
 def edit_question(question):
     del_question(question['id'])
-    id = add_question(
+    edit_answers_question_id(question_id=question['id'], new_id=question['new_id'])
+    add_question(
             title=question['title'],
+            id=question['new_id'],
             submission_time=question['submission_time'],
             message=question['message'],
             view_number=question['view_number'],

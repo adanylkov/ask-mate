@@ -1,6 +1,10 @@
 {% macro show_question(question) %}
         <h2>Question:</h2>
         <h3>{{ question['title'] }}</h3>
+        {% if question['image'] %}
+        {% set url=url_for('static', filename=question['image']) %}
+            <img src="{{ url }}" width="100">
+        {% endif %}
         <p>
             {{ question['message'] }}
         </p>

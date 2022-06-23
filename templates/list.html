@@ -43,7 +43,10 @@
             <a href="/question/{{question['id']}}/vote-down"> DOWN </a>
         </div>
         <h3>{{question["message"]}}</h3>
-        <p>{{question["image"]}}</p> 
+        {% if question['image'] %}
+            {% set url=url_for('static', filename=question['image']) %}
+                <img src="{{ url }}" width="100">
+        {% endif %}
         <p>Submission time: {{question["submission_time"]}}</p>
         <p>View number: {{question["view_number"]}} Vote number: {{question["vote_number"]}} </p><br>
         

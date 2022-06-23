@@ -1,13 +1,9 @@
-#from rich import print
-#from logging import debug
 from flask import Flask, render_template, request, redirect, flash, url_for
-#from flask import send_from_directory
-from werkzeug.utils import secure_filename
 import data_manager
 import util
 import os
 
-UPLOAD_FOLDER = 'images/'
+UPLOAD_FOLDER = 'static/images/'
 ALLOWED_EXTENSIONS = {'png', 'jpg'}
 
 
@@ -52,7 +48,9 @@ def ask_question():
     if request.method=="POST":
         title = request.form.get("title")
         message = request.form.get("message")
-        id = data_manager.add_question(title, message)
+        id = util.create_id()
+        image_name = image(question_id=id)
+        data_manager.add_question(title, message, id=id, image=f"images/{image_name}")
         return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")
@@ -82,30 +80,22 @@ def del_answer(answer_id):
     return redirect(f"/question/{question_id}", 301)
 
 
-@app.route('/image', methods=['GET', 'POST'])
-def image():
+def image(question_id, answer_id=''):
     if request.method == 'POST':
-        app.logger.debug("Got POST request")
         # check if the post request has the file part
         if 'image' not in request.files:
-            app.logger.error("No file part")
             flash('No file part')
-            return redirect(request.url)
+            return None
         file = request.files['image']
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
-            app.logger.error("No selected file")
             flash('No selected file')
-            return redirect(request.url)
+            return None
         if file and file.filename and allowed_file(file.filename):
-            app.logger.debug("Trying to save file")
-            filename = secure_filename(file.filename)
+            filename = f"{question_id}_{answer_id}.{file.filename.rsplit('.', 1)[1]}"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('question_list'))
-
-    else:
-        return render_template("image.html")
+            return filename
 
 
 @app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
@@ -114,13 +104,16 @@ def edit_question(question_id):
     if request.method == 'GET':
         return render_template('edit-question.html', question=question, action=f'/question/{question_id}/edit')
     else:
-        print("in edit_question POST")
         title = request.form.get("title")
         message = request.form.get("message")
         question['title'] = title
         question['message'] = message
-        id = data_manager.edit_question(question)
-        return redirect(url_for('display_question', question_id=id), 301)
+        question['new_id'] = util.create_id()
+        image_name = image(question_id=question['new_id'])
+        if image_name:
+            question['image'] = f"images/{image_name}"
+        data_manager.edit_question(question)
+        return redirect(url_for('display_question', question_id=question['new_id']), 301)
  
 
 @app.route('/question/<int:question_id>/vote-up')

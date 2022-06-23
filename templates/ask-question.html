@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Ask mate - ask a question</title>
 </head>
-<body> 
+
+<body>
     <h1>Ask a question</h1><br>
-    <form action="{{ action|default('/ask-question') }}" method="post">
+    <form action="{{ action|default('/ask-question') }}" method="post" enctype="multipart/form-data">
         Title <input name="title" value="{% block question_title %}{% endblock %}" required><br>
         <label>Question:</label><br>
-        <textarea name="message" rows="20" cols="60" placeholder="Insert a question" required>{% block question_body %}{% endblock %}</textarea><br>
+        <textarea name="message" rows="20" cols="60" placeholder="Insert a question"
+            required>{% block question_body %}{% endblock %}</textarea><br>
+        <label for="image">Upload image:</label>
+        <input name="image" type="file" accept="image/png, image/jpeg">
         <button type="submit">Submit my question</button>
     </form>
 </body>
+
 </html>
