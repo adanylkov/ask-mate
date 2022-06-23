@@ -22,6 +22,10 @@ def get_question_by_id(id):
     questions = connection.read_data_from_file('question.csv')
     return list(filter(lambda question: question['id'] == str(id), questions)).pop()
 
+def get_answer_by_id(id):
+    answers = connection.read_data_from_file('answer.csv')
+    return list(filter(lambda answer: answer['id'] == str(id), answers)).pop()
+
 def answers_by_question_id(question_id):
     answers = connection.read_data_from_file('answer.csv')
     return list(filter(lambda answer: answer['question_id'] == str(question_id), answers))
@@ -47,17 +51,23 @@ def add_question(title, message, id = None, submission_time = None, view_number 
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
-def add_answer(question_id, message, id = None, image = None):
-    #id,submission_time,vote_number,question_id,message,image
+def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0, id = None):
+    if id == None:
+        id = util.create_id()
+    all_answers = answers()
     answer = {
             "id": util.create_id(is_question=False) if not id else id,
             "submission_time": util.make_timestamp(),
             "vote_number": 0,
             "question_id": question_id,
-            "message": message,
-            "image": None if not image else image,
-            }
-    connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
+            "id": id, 
+            "submission_time": util.make_timestamp() if not submission_time else submission_time, 
+            "vote_number": 0 if not vote_number else vote_number, 
+            "message": message, 
+            "image": None if not image else image}
+    all_answers.insert(index, answer)
+    connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
+
 
 def del_question(question, edit : bool):
     all_answers = answers()
@@ -82,10 +92,11 @@ def del_answer(answer_id):
     for dicts in all_answers:
         if dicts["id"] == str(answer_id):
             delete_image(dicts)
-            all_answers.pop(all_answers.index(dicts))
+            index = all_answers.index(dicts)
+            all_answers.pop(index)
             question_id = dicts["question_id"]
             connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
-            return question_id
+            return question_id, index
 
 
 def edit_answers_question_id(question_id, new_id):
@@ -109,6 +120,21 @@ def edit_question(question):
             image=question['image']
             )
 
+
+def edit_answer(answer):
+    delete_question = del_answer(answer['id'])
+    if delete_question:
+        index = delete_question[1]
+        add_answer(
+            id = answer['id'],
+            index = index,
+            question_id=answer['question_id'],
+            submission_time=answer['submission_time'],
+            message=answer['message'],
+            vote_number=answer['vote_number'],
+            image=answer['image']
+            )
+        return answer['question_id']
 
 def vote_up(vote_number):
     if(vote_number):

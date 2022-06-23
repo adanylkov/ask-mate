@@ -85,8 +85,13 @@ def del_question(question_id):
 
 @app.route("/answer/<int:answer_id>/delete", methods=['POST'])
 def del_answer(answer_id):
-    question_id = data_manager.del_answer(answer_id)
-    return redirect(f"/question/{question_id}", 301)
+    question_tupla = data_manager.del_answer(answer_id)
+    if question_tupla:
+        question_id = question_tupla[0]
+        #index = question_tupla[1]
+        return redirect(f"/question/{question_id}", 301)
+    else:
+        return redirect(url_for('question_list'))
 
 
 def image(question_id, answer_id=''):
@@ -147,6 +152,25 @@ def vote_down(question_id):
     data_manager.edit_question(question)
     return redirect("/", 301)
 
+#answer
+@app.route('/answer/<int:answer_id>/vote-up')
+def vote_up_answer(answer_id):
+    answer = data_manager.get_answer_by_id(answer_id)
+    vote_number = int(answer['vote_number'])
+    updated_vote_number = data_manager.vote_up(vote_number)
+    answer['vote_number'] = updated_vote_number
+    id = data_manager.edit_answer(answer)
+    return redirect(f"/question/{id}", 301)
+
+
+@app.route('/answer/<int:answer_id>/vote-down')
+def vote_down_answer(answer_id):
+    answer = data_manager.get_answer_by_id(answer_id)
+    vote_number = int(answer['vote_number'])
+    updated_vote_number = data_manager.vote_down(vote_number)
+    answer['vote_number'] = updated_vote_number
+    id = data_manager.edit_answer(answer)
+    return redirect(f"/question/{id}", 301)
 
 
 if __name__ == "__main__":

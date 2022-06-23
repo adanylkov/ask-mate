@@ -21,6 +21,11 @@
                 <img src="{{ url }}" width="100">
                 <br>
             {% endif %}
+            <div>
+                <a href="/answer/{{answer['id']}}/vote-up"> UP </a> 
+                {{ answer['vote_number'] }}
+                <a href="/answer/{{answer['id']}}/vote-down"> DOWN </a>
+            </div>
             <small>Posted on: {{ answer['submission_time'] }}</small><br>
             <form action="/answer/{{ answer['id'] }}/delete" method="post">
                 <input type="submit" value="Delete the answer" />
