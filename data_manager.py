@@ -87,11 +87,12 @@ def del_question(question, edit : bool):
         connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
 
 
-def del_answer(answer_id):
+def del_answer(answer_id, edit=False):
     all_answers = answers()
     for dicts in all_answers:
         if dicts["id"] == str(answer_id):
-            delete_image(dicts)
+            if not edit:
+                delete_image(dicts)
             index = all_answers.index(dicts)
             all_answers.pop(index)
             question_id = dicts["question_id"]
@@ -122,7 +123,7 @@ def edit_question(question):
 
 
 def edit_answer(answer):
-    delete_question = del_answer(answer['id'])
+    delete_question = del_answer(answer['id'], edit=True)
     if delete_question:
         index = delete_question[1]
         add_answer(
