@@ -124,7 +124,9 @@ def vote_up(question_id):
     vote_number = int(question['vote_number'])
     updated_vote_number = data_manager.vote_up(vote_number)
     question['vote_number'] = updated_vote_number
-    id = data_manager.edit_question(question)
+    id = util.create_id()
+    question['new_id'] = id
+    data_manager.edit_question(question)
     return redirect("/", 301)
 
 @app.route('/question/<int:question_id>/vote-down')
@@ -133,7 +135,9 @@ def vote_down(question_id):
     vote_number = int(question['vote_number'])
     updated_vote_number = data_manager.vote_down(vote_number)
     question['vote_number'] = updated_vote_number
-    id = data_manager.edit_question(question)
+    id = util.create_id()
+    question['new_id'] = id
+    data_manager.edit_question(question)
     return redirect("/", 301)
 
 
