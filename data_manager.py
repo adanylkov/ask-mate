@@ -35,8 +35,9 @@ def add_question(title, message, submission_time = None, view_number = None, vot
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
-def add_answer(message, question_id, submission_time = None, vote_number = None, image = None):
+def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0):
     #id,submission_time,vote_number,question_id,message,image
+    all_answers = answers()
     answer = {
             "question_id": question_id,
             "id": util.create_id(), 
@@ -44,7 +45,8 @@ def add_answer(message, question_id, submission_time = None, vote_number = None,
             "vote_number": 0 if not vote_number else vote_number, 
             "message": message, 
             "image": None if not image else image}
-    connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
+    all_answers.insert(index, answer)
+    connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
 
 
 def del_question(question_id):
@@ -86,16 +88,17 @@ def edit_question(question):
 
 def edit_answer(answer):
     delete_question = del_answer(answer['id'])
-    index = delete_question[1]
-    add_answer(
-        index = index,
-        question_id=answer['question_id'],
-        submission_time=answer['submission_time'],
-        message=answer['message'],
-        vote_number=answer['vote_number'],
-        image=answer['image']
-        )
-    return answer['question_id']
+    if delete_question:
+        index = delete_question[1]
+        add_answer(
+            index = index,
+            question_id=answer['question_id'],
+            submission_time=answer['submission_time'],
+            message=answer['message'],
+            vote_number=answer['vote_number'],
+            image=answer['image']
+            )
+        return answer['question_id']
 
 def vote_up(vote_number):
     if(vote_number):

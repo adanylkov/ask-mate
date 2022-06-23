@@ -151,7 +151,6 @@ def vote_down(question_id):
 @app.route('/answer/<int:answer_id>/vote-up')
 def vote_up_answer(answer_id):
     answer = data_manager.get_answer_by_id(answer_id)
-    print(answer)
     vote_number = int(answer['vote_number'])
     updated_vote_number = data_manager.vote_up(vote_number)
     answer['vote_number'] = updated_vote_number
