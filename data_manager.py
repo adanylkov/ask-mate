@@ -10,11 +10,12 @@ def get_image_by_id(question_id, answer_id = None):
         if image_name in image:
             return image
 
-def delete_image(question_id, answer_id =''):
-    image_folder = os.path.join(os.curdir, 'static', 'images')
-    image_name = get_image_by_id(question_id, answer_id)
-    if image_folder and image_name:
-        os.remove(os.path.join(image_folder, image_name))
+def delete_image(question):
+    image_folder = os.path.join(os.curdir, 'static')
+    image_name = question.get('image')
+    image_file = os.path.join(image_folder, image_name)
+    if os.path.isfile(image_file):
+        os.remove(image_file)
 
 
 def get_question_by_id(id):
@@ -58,30 +59,33 @@ def add_answer(question_id, message, id = None, image = None):
             }
     connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
 
-def del_question(question_id):
+def del_question(question, edit : bool):
     all_answers = answers()
     all_questions = questions()
-    delete_image(question_id=question_id)
+    question_id = question['id']
+    if not edit:
+        delete_image(question)
     for dicts in all_questions:
         if dicts["id"] == str(question_id):
             all_questions.pop(all_questions.index(dicts))
     connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
-    for dicts in all_answers:
-        if dicts["question_id"] == str(question_id):
-            delete_image(question_id=str(question_id), answer_id=dicts["id"])
-            all_answers.pop(all_answers.index(dicts))
-    connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
+    if not edit:
+        for dicts in all_answers:
+            if dicts["question_id"] == str(question_id):
+                    delete_image(dicts)
+                    all_answers.pop(all_answers.index(dicts))
+        connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
 
 
 def del_answer(answer_id):
     all_answers = answers()
     for dicts in all_answers:
         if dicts["id"] == str(answer_id):
-            delete_image(question_id=str(dicts["question_id"]), answer_id=dicts["id"])
+            delete_image(dicts)
             all_answers.pop(all_answers.index(dicts))
             question_id = dicts["question_id"]
-    connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
-    return question_id
+            connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
+            return question_id
 
 
 def edit_answers_question_id(question_id, new_id):
@@ -93,7 +97,7 @@ def edit_answers_question_id(question_id, new_id):
 
 
 def edit_question(question):
-    del_question(question['id'])
+    del_question(question, edit=True)
     edit_answers_question_id(question_id=question['id'], new_id=question['new_id'])
     add_question(
             title=question['title'],
@@ -104,7 +108,6 @@ def edit_question(question):
             vote_number=question['vote_number'],
             image=question['image']
             )
-    return id
 
 
 def vote_up(vote_number):
@@ -122,4 +125,4 @@ def vote_down(vote_number):
     return vote_number
 
 if __name__ == "__main__":
-    print(questions()[0])
+    edit_answers_question_id(461,462)
