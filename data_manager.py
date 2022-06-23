@@ -1,17 +1,20 @@
-from flask import url_for
 import connection
 import util
 import os
-import re
 
 
-def get_image_by_id(question_id, answer_id = ''):
-    images = os.listdir(os.path.join(os.curdir, 'images'))
-    image_name = f"{question_id}_{answer_id}"
-    find = re.compile(f"{image_name}.*")
-    match = list(filter(lambda im: re.search(find, im), images))
-    if match:
-        return match.pop()
+def get_image_by_id(question_id, answer_id = None):
+    images = os.listdir(os.path.join(os.curdir, 'static','images'))
+    image_name = f"{question_id}_{answer_id if answer_id else ''}"
+    for image in images:
+        if image_name in image:
+            return image
+
+def delete_image(question_id, answer_id =''):
+    image_folder = os.path.join(os.curdir, 'static', 'images')
+    image_name = get_image_by_id(question_id, answer_id)
+    if image_folder and image_name:
+        os.remove(os.path.join(image_folder, image_name))
 
 
 def get_question_by_id(id):
@@ -58,12 +61,14 @@ def add_answer(question_id, message, id = None, image = None):
 def del_question(question_id):
     all_answers = answers()
     all_questions = questions()
+    delete_image(question_id=question_id)
     for dicts in all_questions:
         if dicts["id"] == str(question_id):
             all_questions.pop(all_questions.index(dicts))
     connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
     for dicts in all_answers:
         if dicts["question_id"] == str(question_id):
+            delete_image(question_id=str(question_id), answer_id=dicts["id"])
             all_answers.pop(all_answers.index(dicts))
     connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
 
@@ -72,6 +77,7 @@ def del_answer(answer_id):
     all_answers = answers()
     for dicts in all_answers:
         if dicts["id"] == str(answer_id):
+            delete_image(question_id=str(dicts["question_id"]), answer_id=dicts["id"])
             all_answers.pop(all_answers.index(dicts))
             question_id = dicts["question_id"]
     connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
