@@ -1,4 +1,5 @@
 id,submission_time,vote_number,question_id,message,image
-32,1655985360,0,468,"asn1
-",images/460_32.png
-33,1655985432,0,468,fasdfsdfads,
+1,1493398154,4,1,You need to use brackets: my_list = [],
+2,1493088154,35,1,Look it up in the Python docs,
+3,1655811187,0,9,bbb,
+10,1655905150,0,7,asdasd,
