@@ -22,9 +22,12 @@ def answers():
     answers = connection.read_data_from_file('answer.csv')
     return answers
 
-def add_question(title, message, submission_time = None, view_number = None, vote_number = None, image = None):
+def add_question(title, message, submission_time = None, view_number = None, vote_number = None, image = None, id = None):
+    if id == None:
+        id = util.create_id()
+
     question = {
-            "id": util.create_id(),
+            "id": id,
             "submission_time": util.make_timestamp() if not submission_time else submission_time,
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
@@ -35,12 +38,13 @@ def add_question(title, message, submission_time = None, view_number = None, vot
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
-def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0):
-    #id,submission_time,vote_number,question_id,message,image
+def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0, id = None):
+    if id == None:
+        id = util.create_id()
     all_answers = answers()
     answer = {
             "question_id": question_id,
-            "id": util.create_id(), 
+            "id": id, 
             "submission_time": util.make_timestamp() if not submission_time else submission_time, 
             "vote_number": 0 if not vote_number else vote_number, 
             "message": message, 
@@ -74,8 +78,14 @@ def del_answer(answer_id):
 
 
 def edit_question(question):
-    del_question(question['id'])
+    all_questions = questions()
+    for dicts in all_questions:
+        if dicts["id"] == str(question['id']):
+            all_questions.pop(all_questions.index(dicts))
+    connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
+
     id = add_question(
+            id = question['id'],
             title=question['title'],
             submission_time=question['submission_time'],
             message=question['message'],
@@ -91,6 +101,7 @@ def edit_answer(answer):
     if delete_question:
         index = delete_question[1]
         add_answer(
+            id = answer['id'],
             index = index,
             question_id=answer['question_id'],
             submission_time=answer['submission_time'],
