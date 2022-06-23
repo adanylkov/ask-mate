@@ -25,6 +25,8 @@ def allowed_file(filename):
 def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
+    view_number = (question['view_number'])
+    data_manager.update_view_number(view_number, question_id)
     answers = data_manager.answers_by_question_id(question_id)
     for ans in answers:
         ans['submission_time'] = util.convert_time(ans['submission_time'])
