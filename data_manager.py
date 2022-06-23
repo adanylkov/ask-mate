@@ -64,10 +64,11 @@ def del_answer(answer_id):
     all_answers = answers()
     for dicts in all_answers:
         if dicts["id"] == str(answer_id):
-            all_answers.pop(all_answers.index(dicts))
+            index = all_answers.index(dicts)
+            all_answers.pop(index)
             question_id = dicts["question_id"]
-    connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
-    return question_id
+            connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
+            return question_id, index
 
 
 def edit_question(question):
@@ -84,8 +85,10 @@ def edit_question(question):
 
 
 def edit_answer(answer):
-    del_answer(answer['id'])
+    delete_question = del_answer(answer['id'])
+    index = delete_question[1]
     add_answer(
+        index = index,
         question_id=answer['question_id'],
         submission_time=answer['submission_time'],
         message=answer['message'],

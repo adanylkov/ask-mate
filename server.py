@@ -26,8 +26,10 @@ def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     answers = data_manager.answers_by_question_id(question_id)
+    print(answers)
     for ans in answers:
         ans['submission_time'] = util.convert_time(ans['submission_time'])
+    print(answers)
     return render_template("question-template.html", question=question, answers=answers)
 
 
@@ -78,7 +80,11 @@ def del_question(question_id):
 
 @app.route("/answer/<int:answer_id>/delete")
 def del_answer(answer_id):
-    question_id = data_manager.del_answer(answer_id)
+    question_tupla = data_manager.del_answer(answer_id)
+    question_id = question_tupla[0]
+    index = question_tupla[1]
+    print("TUTAJ",question_id)
+    print("TUTAJ INDEX",index)
     return redirect(f"/question/{question_id}", 301)
 
 
