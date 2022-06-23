@@ -122,15 +122,23 @@ def edit_question(question_id):
         id = data_manager.edit_question(question)
         return redirect(url_for('display_question', question_id=id), 301)
  
-#moja część
-@app.route('/question/<question_id>/vote-up')
+
+@app.route('/question/<int:question_id>/vote-up')
 def vote_up(question_id):
-    data_manager.vote_up(question_id)
+    question = data_manager.get_question_by_id(question_id)
+    vote_number = int(question['vote_number'])
+    updated_vote_number = data_manager.vote_up(vote_number)
+    question['vote_number'] = updated_vote_number
+    id = data_manager.edit_question(question)
     return redirect("/", 301)
 
-@app.route('/question/<question_id>/vote-down')
-def vote_up(question_id):
-    data_manager.vote_down(question_id)
+@app.route('/question/<int:question_id>/vote-down')
+def vote_down(question_id):
+    question = data_manager.get_question_by_id(question_id)
+    vote_number = int(question['vote_number'])
+    updated_vote_number = data_manager.vote_down(vote_number)
+    question['vote_number'] = updated_vote_number
+    id = data_manager.edit_question(question)
     return redirect("/", 301)
 
 
