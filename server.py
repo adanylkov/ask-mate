@@ -64,7 +64,10 @@ def get_answer(question_id):
         return render_template("answer-question.html", question=question)
     else:
         message = request.form.get("message")
-        data_manager.add_answer(question_id=question_id, message=message)
+        answer_id = util.create_id(is_question=False)
+        image_name = image(question_id=question_id, answer_id=str(answer_id))
+        data_manager.add_answer(question_id=question_id, message=message, id=answer_id, image=f"images/{image_name}")
+        app.logger.debug(image_name)
         return redirect(f"/question/{question_id}", 301)
 
 
@@ -84,18 +87,22 @@ def image(question_id, answer_id=''):
     if request.method == 'POST':
         # check if the post request has the file part
         if 'image' not in request.files:
+            app.logger.debug('No file part')
             flash('No file part')
             return None
         file = request.files['image']
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
+            app.logger.debug('No selected file')
             flash('No selected file')
             return None
         if file and file.filename and allowed_file(file.filename):
+            app.logger.debug('Get an image')
             filename = f"{question_id}_{answer_id}.{file.filename.rsplit('.', 1)[1]}"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return filename
+        app.logger.debug('Huh?')
 
 
 @app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])

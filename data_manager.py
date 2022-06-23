@@ -43,9 +43,16 @@ def add_question(title, message, id = None, submission_time = None, view_number 
     connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     return question["id"]
 
-def add_answer(question_id, message):
+def add_answer(question_id, message, id = None, image = None):
     #id,submission_time,vote_number,question_id,message,image
-    answer = {"id": util.create_id(is_question=False), "submission_time": util.make_timestamp(), "vote_number": 0, "question_id": question_id, "message": message, "image": None}
+    answer = {
+            "id": util.create_id(is_question=False) if not id else id,
+            "submission_time": util.make_timestamp(),
+            "vote_number": 0,
+            "question_id": question_id,
+            "message": message,
+            "image": None if not image else image,
+            }
     connection.add_data_to_file('answer.csv', data=answer, data_header=connection.ANSWER_HEADER)
 
 def del_question(question_id):

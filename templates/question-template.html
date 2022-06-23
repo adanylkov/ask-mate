@@ -20,6 +20,13 @@
         <form action="/answer/{{ answer['id'] }}/delete">
             <input type="submit" value="Delete the answer" />
         </form><br>
+            <p>{{ answer['message'] }}</p>
+            {% if answer['image'] %}
+                {% set url=url_for('static', filename=answer['image']) %}
+                    <img src="{{ url }}" width="100">
+                    <br>
+            {% endif %}
+            <small>Posted on: {{ answer['submission_time'] }}</small>
         {% endfor %}
     </div>
     {% endif %}
