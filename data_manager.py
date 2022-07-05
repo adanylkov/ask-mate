@@ -20,21 +20,30 @@ def delete_image(question):
 
 @database_common.connection_handler
 def get_question_by_id(cursor, id):
-    # questions = connection.read_data_from_file('question.csv')
-    # return list(filter(lambda question: question['id'] == str(id), questions)).pop()
-    query = f"SELECT *\
-         FROM question\
-         WHERE id='{id}'"
-    cursor.execute(query)
-    return cursor.fetchall()
+    query = """
+        SELECT *
+        FROM question
+        WHERE id = %s
+        """
+    cursor.execute(query, (id, ))
+    questions = cursor.fetchall()
+    question = list(map(util.question_datetime_to_epoch, questions))
+    return question.pop() if question else None 
 
 def get_answer_by_id(id):
     answers = connection.read_data_from_file('answer.csv')
     return list(filter(lambda answer: answer['id'] == str(id), answers)).pop()
 
-def answers_by_question_id(question_id):
-    answers = connection.read_data_from_file('answer.csv')
-    return list(filter(lambda answer: answer['question_id'] == str(question_id), answers))
+@database_common.connection_handler
+def answers_by_question_id(cursor, question_id):
+    query = """
+    SELECT *
+    FROM answer
+    WHERE question_id = %s
+    """
+    cursor.execute(query, (question_id, ))
+    answers = cursor.fetchall()
+    return list(map(util.question_datetime_to_epoch, answers))
 
 
 @database_common.connection_handler
@@ -50,15 +59,21 @@ def questions(cursor):
 #     questions = connection.read_data_from_file('question.csv')
 #     return questions
 
-def answers():
-    answers = connection.read_data_from_file('answer.csv')
-    return answers
+@database_common.connection_handler
+def answers(cursor):
+    query = """
+        SELECT *
+        FROM answer
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 @database_common.connection_handler
-def add_question(cursor, title, message, submission_time = None, view_number = None, vote_number = None, image = None):
+def add_question(cursor, title, message, id = None, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
-            "submission_time": util.make_timestamp(), #if not submission_time else submission_time,
+            "id": util.create_id() if not id else id,
+            "submission_time": util.make_timestamp() if not submission_time else submission_time,
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
             "title": title,
@@ -67,39 +82,33 @@ def add_question(cursor, title, message, submission_time = None, view_number = N
             }
     #connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     cursor.execute("""INSERT INTO question
-            (submission_time, view_number, vote_number, title, message, image)
-            VALUES (%(s_t)s, %(v_n)s, %(v_r)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
-                   {'s_t': question['submission_time'],
+            (id, submission_time, view_number, vote_number, title, message, image)
+            VALUES (%(i_d)s, %(s_t)s, %(v_n)s, %(v_r)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
+                   {'i_d': question['id'],
+                    's_t': question['submission_time'],
                     'v_n': question['view_number'],
                     'v_r': question['vote_number'],
                     't_l': question['title'],
                     'm_g': question['message'],
                     'i_g': question['image']
                     })
-    query = f"SELECT id\
-        FROM question\
-        WHERE title LIKE '%{title}'"
-    cursor.execute(query)
-    return cursor.fetchall()
-    #return question["id"]
+    return question["id"]
 
 
-def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0, id = None):
-    if id == None:
-        id = util.create_id()
-    all_answers = answers()
+@database_common.connection_handler
+def add_answer(cursor, message, question_id, image = None):
     answer = {
-            "id": util.create_id(is_question=False) if not id else id,
             "submission_time": util.make_timestamp(),
             "vote_number": 0,
             "question_id": question_id,
-            "id": id, 
-            "submission_time": util.make_timestamp() if not submission_time else submission_time, 
-            "vote_number": 0 if not vote_number else vote_number, 
             "message": message, 
-            "image": None if not image else image}
-    all_answers.insert(index, answer)
-    connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
+            "image": image
+            }
+    query = """
+    INSERT INTO answer (submission_time, vote_number, question_id, message, image)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, [value for value in answer.values()])
 
 
 def del_question(question, edit : bool):
@@ -153,6 +162,7 @@ def edit_question(question):
             vote_number=question['vote_number'],
             image=question['image']
             )
+
 
 
 def edit_answer(answer):

@@ -73,7 +73,7 @@ def get_answer(question_id):
         image_name = image(question_id=question_id, answer_id=str(answer_id))
         if image_name:
             image_name = f"images/{image_name}"
-        data_manager.add_answer(question_id=question_id, message=message, id=answer_id, image=image_name)
+        data_manager.add_answer(message=message, question_id=question_id, image=image_name)
         return redirect(f"/question/{question_id}", 301)
 
 

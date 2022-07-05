@@ -9,7 +9,7 @@ def convert_time(timestamp, format="%d %B %Y, %H:%M"):
 
 
 def make_timestamp():
-    datetime.datetime.now()
+    return datetime.datetime.now()
 
 
 def question_datetime_to_epoch(question):
