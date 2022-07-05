@@ -18,17 +18,32 @@ def delete_image(question):
         os.remove(image_file)
 
 
-def get_question_by_id(id):
-    questions = connection.read_data_from_file('question.csv')
-    return list(filter(lambda question: question['id'] == str(id), questions)).pop()
+@database_common.connection_handler
+def get_question_by_id(cursor, id):
+    query = """
+        SELECT *
+        FROM question
+        WHERE id = %s
+        """
+    cursor.execute(query, (id, ))
+    questions = cursor.fetchall()
+    question = list(map(util.question_datetime_to_epoch, questions))
+    return question.pop() if question else None 
 
 def get_answer_by_id(id):
     answers = connection.read_data_from_file('answer.csv')
     return list(filter(lambda answer: answer['id'] == str(id), answers)).pop()
 
-def answers_by_question_id(question_id):
-    answers = connection.read_data_from_file('answer.csv')
-    return list(filter(lambda answer: answer['question_id'] == str(question_id), answers))
+@database_common.connection_handler
+def answers_by_question_id(cursor, question_id):
+    query = """
+    SELECT *
+    FROM answer
+    WHERE question_id = %s
+    """
+    cursor.execute(query, (question_id, ))
+    answers = cursor.fetchall()
+    return list(map(util.question_datetime_to_epoch, answers))
 
 
 @database_common.connection_handler
@@ -44,9 +59,14 @@ def questions(cursor):
 #     questions = connection.read_data_from_file('question.csv')
 #     return questions
 
-def answers():
-    answers = connection.read_data_from_file('answer.csv')
-    return answers
+@database_common.connection_handler
+def answers(cursor):
+    query = """
+        SELECT *
+        FROM answer
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 @database_common.connection_handler
@@ -74,22 +94,21 @@ def add_question(cursor, title, message, id = None, submission_time = None, view
                     })
     return question["id"]
 
-def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0, id = None):
-    if id == None:
-        id = util.create_id()
-    all_answers = answers()
+
+@database_common.connection_handler
+def add_answer(cursor, message, question_id, image = None):
     answer = {
-            "id": util.create_id(is_question=False) if not id else id,
             "submission_time": util.make_timestamp(),
             "vote_number": 0,
             "question_id": question_id,
-            "id": id, 
-            "submission_time": util.make_timestamp() if not submission_time else submission_time, 
-            "vote_number": 0 if not vote_number else vote_number, 
             "message": message, 
-            "image": None if not image else image}
-    all_answers.insert(index, answer)
-    connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
+            "image": image
+            }
+    query = """
+    INSERT INTO answer (submission_time, vote_number, question_id, message, image)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, [value for value in answer.values()])
 
 
 def del_question(question, edit : bool):
@@ -143,6 +162,7 @@ def edit_question(question):
             vote_number=question['vote_number'],
             image=question['image']
             )
+
 
 
 def edit_answer(answer):
