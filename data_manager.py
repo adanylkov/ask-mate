@@ -50,6 +50,7 @@ def answers_by_question_id(cursor, question_id):
     SELECT *
     FROM answer
     WHERE question_id = %s
+    ORDER BY vote_number DESC
     """
     cursor.execute(query, (question_id, ))
     answers = cursor.fetchall()
