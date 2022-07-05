@@ -18,9 +18,15 @@ def delete_image(question):
         os.remove(image_file)
 
 
-def get_question_by_id(id):
-    questions = connection.read_data_from_file('question.csv')
-    return list(filter(lambda question: question['id'] == str(id), questions)).pop()
+@database_common.connection_handler
+def get_question_by_id(cursor, id):
+    # questions = connection.read_data_from_file('question.csv')
+    # return list(filter(lambda question: question['id'] == str(id), questions)).pop()
+    query = f"SELECT *\
+         FROM question\
+         WHERE id='{id}'"
+    cursor.execute(query)
+    return cursor.fetchall()
 
 def get_answer_by_id(id):
     answers = connection.read_data_from_file('answer.csv')
@@ -50,9 +56,8 @@ def answers():
 
 
 @database_common.connection_handler
-def add_question(cursor, title, message, id = None, submission_time = None, view_number = None, vote_number = None, image = None):
+def add_question(cursor, title, message, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
-            "id": util.create_id() if not id else id,
             "submission_time": util.make_timestamp(), #if not submission_time else submission_time,
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
@@ -62,17 +67,22 @@ def add_question(cursor, title, message, id = None, submission_time = None, view
             }
     #connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     cursor.execute("""INSERT INTO question
-            (id, submission_time, view_number, vote_number, title, message, image)
-            VALUES (%(i_d)s, %(s_t)s, %(v_n)s, %(v_r)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
-                   {'i_d': question['id'],
-                    's_t': question['submission_time'],
+            (submission_time, view_number, vote_number, title, message, image)
+            VALUES (%(s_t)s, %(v_n)s, %(v_r)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
+                   {'s_t': question['submission_time'],
                     'v_n': question['view_number'],
                     'v_r': question['vote_number'],
                     't_l': question['title'],
                     'm_g': question['message'],
                     'i_g': question['image']
                     })
-    return question["id"]
+    query = f"SELECT id\
+        FROM question\
+        WHERE title LIKE '%{title}'"
+    cursor.execute(query)
+    return cursor.fetchall()
+    #return question["id"]
+
 
 def add_answer(message, question_id, submission_time = None, vote_number = None, image = None, index = 0, id = None):
     if id == None:

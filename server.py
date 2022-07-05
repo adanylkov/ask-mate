@@ -20,13 +20,14 @@ def allowed_file(filename):
 @app.route("/question/<int:question_id>")
 def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
-    question['submission_time'] = util.convert_time(question['submission_time'])
-    view_number = (question['view_number'])
-    data_manager.update_view_number(view_number, question_id)
-    answers = data_manager.answers_by_question_id(question_id)
-    for ans in answers:
-        ans['submission_time'] = util.convert_time(ans['submission_time'])
-    return render_template("question-template.html", question=question, answers=answers)
+    print(question)
+    #question['submission_time'] = util.convert_time(question['submission_time'])
+    # view_number = (question['view_number'])
+    # data_manager.update_view_number(view_number, question_id)
+    # answers = data_manager.answers_by_question_id(question_id)
+    # for ans in answers:
+    #     ans['submission_time'] = util.convert_time(ans['submission_time'])
+    return render_template("question-template.html", question=question)#, answers=answers)
 
 
 @app.route("/")
@@ -54,7 +55,7 @@ def ask_question():
         image_name = image(question_id=id)
         if image_name:
             image_name = f"images/{image_name}"
-        data_manager.add_question(title, message, id=id, image=image_name)
+        data_manager.add_question(title, message, image=image_name)
         return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")
