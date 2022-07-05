@@ -53,7 +53,7 @@ def answers():
 def add_question(cursor, title, message, id = None, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
             "id": util.create_id() if not id else id,
-            "submission_time": util.make_timestamp() if not submission_time else submission_time,
+            "submission_time": util.make_timestamp(), #if not submission_time else submission_time,
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
             "title": title,
