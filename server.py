@@ -130,7 +130,7 @@ def edit_question(question_id):
         return redirect(url_for('display_question', question_id=question['new_id']), 301)
  
 
-@app.route('/question/<int:question_id>/vote-up')
+@app.route('/question/<int:question_id>/vote-up', methods = ['POST'])
 def vote_up(question_id):
     question = data_manager.get_question_by_id(question_id)
     vote_number = int(question['vote_number'])
@@ -141,7 +141,7 @@ def vote_up(question_id):
     data_manager.edit_question(question)
     return redirect("/", 301)
 
-@app.route('/question/<int:question_id>/vote-down')
+@app.route('/question/<int:question_id>/vote-down', methods = ['POST'])
 def vote_down(question_id):
     question = data_manager.get_question_by_id(question_id)
     vote_number = int(question['vote_number'])
@@ -153,17 +153,18 @@ def vote_down(question_id):
     return redirect("/", 301)
 
 #answer
-@app.route('/answer/<int:answer_id>/vote-up')
+@app.route('/answer/<int:answer_id>/vote-up', methods = ['POST'])
 def vote_up_answer(answer_id):
     answer = data_manager.get_answer_by_id(answer_id)
     vote_number = int(answer['vote_number'])
     updated_vote_number = data_manager.vote_up(vote_number)
     answer['vote_number'] = updated_vote_number
+    print(f"{answer=}")
     id = data_manager.edit_answer(answer)
     return redirect(f"/question/{id}", 301)
 
 
-@app.route('/answer/<int:answer_id>/vote-down')
+@app.route('/answer/<int:answer_id>/vote-down', methods = ['POST'])
 def vote_down_answer(answer_id):
     answer = data_manager.get_answer_by_id(answer_id)
     vote_number = int(answer['vote_number'])

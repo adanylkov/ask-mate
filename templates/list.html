@@ -38,9 +38,13 @@
         <!--id,submission_time,view_number,vote_number,title,message,image-->
         <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
         <div>
-            <a href="/question/{{question['id']}}/vote-up"> UP </a> 
+          <form action="/question/{{question['id']}}/vote-up" method="post">
+            <button type="submit">UP</button>
+          </form>
             {{ question['vote_number'] }}
-            <a href="/question/{{question['id']}}/vote-down"> DOWN </a>
+          <form action="/question/{{question['id']}}/vote-down">
+            <button type="submit">DOWN</button>
+          </form>
         </div>
         <h3>{{question["message"]}}</h3>
         {% if question['image'] %}
