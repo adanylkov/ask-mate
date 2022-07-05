@@ -170,24 +170,15 @@ def edit_answers_question_id(question_id, new_id):
 
 
 @database_common.connection_handler
-def edit_question(cursor, question, title, message):
-    # del_question(question, edit=True)
-    # edit_answers_question_id(question_id=question['id'], new_id=question['new_id'])
-    add_question={
-            "title": question['title'],
-            # id=question['new_id'],
-            # submission_time=question['submission_time'],
-            "message": question['message'],
-            # view_number=question['view_number'],
-            # vote_number=question['vote_number'],
-            "image": question['image']
-            }
+def edit_question(cursor, question, title, message, image_name):
     query = """
     UPDATE question
         SET title = %s, message = %s, image = %s
         WHERE id = %s
     """
-    cursor.execute(query, (title, message, add_question['image'], question['id']))
+    if image_name:
+        delete_image(question)
+    cursor.execute(query, (title, message, image_name if image_name else question['image'], question['id']))
 
 
 @database_common.connection_handler
