@@ -5,6 +5,8 @@ import os
 import psycopg2
 import psycopg2.extras
 
+from typing import Callable, Any, Concatenate, ParamSpec 
+
 
 def get_connection_string():
     # setup connection string
@@ -37,9 +39,10 @@ def open_database():
         raise exception
     return connection
 
+P = ParamSpec("P")
 
-def connection_handler(function):
-    def wrapper(*args, **kwargs):
+def connection_handler(function: Callable[Concatenate[psycopg2.extras.RealDictCursor, P], Any]) -> Callable[P, Any]:
+    def wrapper(*args : P.args, **kwargs: P.kwargs):
         connection = open_database()
         # we set the cursor_factory parameter to return with a RealDictCursor cursor (cursor which provide dictionaries)
         dict_cur = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
