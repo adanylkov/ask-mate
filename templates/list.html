@@ -42,7 +42,7 @@
             <button type="submit">UP</button>
           </form>
             {{ question['vote_number'] }}
-          <form action="/question/{{question['id']}}/vote-down">
+          <form action="/question/{{question['id']}}/vote-down" method="post">
             <button type="submit">DOWN</button>
           </form>
         </div>

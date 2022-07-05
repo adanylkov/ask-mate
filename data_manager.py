@@ -207,14 +207,14 @@ def vote_update(cursor, updated_vote_number, question_id):
 
 def vote_up(vote_number):
     if(vote_number):
-        vote_number +=1
+        vote_number += 1
     else:
         vote_number = 1
     return vote_number
     
 def vote_down(vote_number):  
     if(vote_number):
-        vote_number -=1
+        vote_number -= 1
     else:
         vote_number = -1
     return vote_number
