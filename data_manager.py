@@ -191,6 +191,15 @@ def edit_answer(cursor, answer):
         cursor.execute(query, (answer['vote_number'], answer['message'], answer['image'], answer['id']))
         return answer['question_id']
 
+@database_common.connection_handler
+def vote_update(cursor, updated_vote_number, question_id):
+    query = """
+        UPDATE question
+            SET vote_number = %s
+            WHERE id = %s
+        """
+    cursor.execute(query, (updated_vote_number, question_id))
+
 def vote_up(vote_number):
     if(vote_number):
         vote_number +=1
@@ -214,7 +223,6 @@ def update_view_number(cursor, view_number, question_id):
     #     if dicts["id"] == str(question_id):
     #         dicts["view_number"] = str(updated_view_number)
     # connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
-    print(updated_view_number, question_id)
     query = """
     UPDATE question
         SET view_number = %s
