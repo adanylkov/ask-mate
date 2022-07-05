@@ -85,13 +85,12 @@ def answers(cursor):
 @database_common.connection_handler
 def add_question(cursor, title, message, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
-            #"id": util.create_id() if not id else id,
             "submission_time": util.make_timestamp(),
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
             "title": title,
             "message": message,
-            "image": None if not image else image
+            "image": image
             }
     #connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     cursor.execute("""INSERT INTO question
@@ -106,7 +105,8 @@ def add_question(cursor, title, message, submission_time = None, view_number = N
                     })
     query = """SELECT id FROM question ORDER BY id DESC LIMIT 1"""
     cursor.execute(query)
-    return cursor.fetchone()
+    return cursor.fetchone().get('id')
+
 
 
 @database_common.connection_handler
@@ -125,22 +125,28 @@ def add_answer(cursor, message, question_id, image = None):
     cursor.execute(query, [value for value in answer.values()])
 
 
-def del_question(question, edit : bool):
-    all_answers = answers()
-    all_questions = questions()
-    question_id = question['id']
-    if not edit:
-        delete_image(question)
-    for dicts in all_questions:
-        if dicts["id"] == str(question_id):
-            all_questions.pop(all_questions.index(dicts))
-    connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
-    if not edit:
-        for dicts in all_answers:
-            if dicts["question_id"] == str(question_id):
-                    delete_image(dicts)
-                    all_answers.pop(all_answers.index(dicts))
-        connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
+@database_common.connection_handler
+def del_question(cursor, question):
+    query = """
+    SELECT * FROM answer
+    WHERE question_id = %s
+    """
+    cursor.execute(query, (question['id'], ))
+    answers = cursor.fetchall()
+    answers.append(question)
+    for id in answers:
+        delete_image(id)
+
+    query = """
+    DELETE FROM answer
+    WHERE question_id = %s
+    """
+    cursor.execute(query, (question['id'],))
+    query = """
+    DELETE FROM question
+    WHERE id = %s
+    """
+    cursor.execute(query, (question['id'],))
 
 
 @database_common.connection_handler

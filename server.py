@@ -23,10 +23,9 @@ def display_question(question_id : int):
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])
     data_manager.update_view_number(view_number, question_id)
-    # answers = data_manager.answers_by_question_id(question_id)
-    # for ans in answers:
-    #     ans['submission_time'] = util.convert_time(ans['submission_time'])
-    return render_template("question-template.html", question=question)#, answers=answers)
+    answers = data_manager.answers_by_question_id(question_id)
+    for ans in answers: ans['submission_time'] = util.convert_time(ans['submission_time'])
+    return render_template("question-template.html", question=question, answers=answers)
 
 
 @app.route("/")
@@ -48,13 +47,8 @@ def ask_question():
     if request.method=="POST":
         title = request.form.get("title")
         message = request.form.get("message")
-        # id = data_manager.
-        # id = 0 # need the id from newly created question
-        image_name = image(question_id=0)
-        if image_name:
-            image_name = f"images/{image_name}"
-        get_id = data_manager.add_question(title, message, image=image_name)
-        id = get_id['id']
+        image_name = image()
+        id = data_manager.add_question(title, message, image=image_name)
         return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")
@@ -68,10 +62,7 @@ def get_answer(question_id):
         return render_template("answer-question.html", question=question)
     else:
         message = request.form.get("message")
-        answer_id = util.create_id(is_question=False)
-        image_name = image(question_id=question_id, answer_id=str(answer_id))
-        if image_name:
-            image_name = f"images/{image_name}"
+        image_name = image()
         data_manager.add_answer(message=message, question_id=question_id, image=image_name)
         return redirect(f"/question/{question_id}", 301)
 
@@ -79,7 +70,7 @@ def get_answer(question_id):
 @app.route("/question/<int:question_id>/delete", methods=['POST'])
 def del_question(question_id):
     question = data_manager.get_question_by_id(question_id)
-    data_manager.del_question(question, edit=False)
+    data_manager.del_question(question)
     return redirect("/", 301)
 
 
@@ -92,7 +83,7 @@ def del_answer(answer_id):
     return redirect(url_for('display_question', question_id=question_id))
 
 
-def image(question_id, answer_id=''):
+def image():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'image' not in request.files:
@@ -105,9 +96,9 @@ def image(question_id, answer_id=''):
             flash('No selected file')
             return None
         if file and file.filename and allowed_file(file.filename):
-            filename = f"{question_id}_{answer_id}.{file.filename.rsplit('.', 1)[1]}"
+            filename = f"{util.random_identificator()}.{file.filename.rsplit('.', 1)[1]}"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return filename
+            return f"images/{filename}"
 
 
 @app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])

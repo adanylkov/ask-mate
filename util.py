@@ -1,6 +1,7 @@
 import time
 import connection
 import datetime
+import random, string
 
 
 def convert_time(timestamp, format="%d %B %Y, %H:%M"):
@@ -42,6 +43,10 @@ def sort_by(question, order):
 
     func, key = sort_by[order]
     return func(str(question[key]).lower())
+
+
+def random_identificator():
+    return ''.join(random.choices(string.ascii_letters + string.digits, k = 16))
 
 
 if __name__ == "__main__":
