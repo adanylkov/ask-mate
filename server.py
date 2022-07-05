@@ -48,11 +48,13 @@ def ask_question():
     if request.method=="POST":
         title = request.form.get("title")
         message = request.form.get("message")
-        id = util.create_id()
-        image_name = image(question_id=id)
+        # id = data_manager.
+        # id = 0 # need the id from newly created question
+        image_name = image(question_id=0)
         if image_name:
             image_name = f"images/{image_name}"
-        data_manager.add_question(title, message, image=image_name)
+        get_id = data_manager.add_question(title, message, image=image_name)
+        id = get_id['id']
         return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")

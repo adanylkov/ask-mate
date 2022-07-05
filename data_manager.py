@@ -3,6 +3,7 @@ import util
 import os
 import database_common
 
+
 def get_image_by_id(question_id, answer_id = None):
     images = os.listdir(os.path.join(os.curdir, 'static','images'))
     image_name = f"{question_id}_{answer_id if answer_id else ''}"
@@ -10,12 +11,14 @@ def get_image_by_id(question_id, answer_id = None):
         if image_name in image:
             return image
 
+
 def delete_image(question):
     image_folder = os.path.join(os.curdir, 'static')
     image_name = question.get('image')
     image_file = os.path.join(image_folder, image_name)
     if os.path.isfile(image_file):
         os.remove(image_file)
+
 
 
 @database_common.connection_handler
@@ -51,6 +54,8 @@ def questions(cursor):
     query = """
         SELECT *
         FROM question
+        ORDER BY submission_time DESC 
+        LIMIT 5
         """
     cursor.execute(query)
     questions = cursor.fetchall()
@@ -91,12 +96,9 @@ def add_question(cursor, title, message, submission_time = None, view_number = N
                     'm_g': question['message'],
                     'i_g': question['image']
                     })
-    cursor.execute("""SELECT *
-        FROM question
-        WHERE title=%(t_l)s
-        """,
-        {'t_l': title})
-    return cursor.fetchall()
+    query = """SELECT id FROM question ORDER BY id DESC LIMIT 1"""
+    cursor.execute(query)
+    return cursor.fetchone()
 
 
 @database_common.connection_handler

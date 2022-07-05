@@ -18,6 +18,8 @@ def question_datetime_to_epoch(question):
     return question
 
 
+
+
 def create_id(is_question=True):
     id = connection.read_last_id("last_id.txt")
     question_id, answer_id = id.split(',')
