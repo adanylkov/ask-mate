@@ -70,10 +70,10 @@ def answers(cursor):
 
 
 @database_common.connection_handler
-def add_question(cursor, title, message, id = None, submission_time = None, view_number = None, vote_number = None, image = None):
+def add_question(cursor, title, message, submission_time = None, view_number = None, vote_number = None, image = None):
     question = {
-            "id": util.create_id() if not id else id,
-            "submission_time": util.make_timestamp() if not submission_time else submission_time,
+            #"id": util.create_id() if not id else id,
+            "submission_time": util.make_timestamp(),
             "view_number": 0 if not view_number else view_number,
             "vote_number": 0 if not vote_number else vote_number,
             "title": title,
@@ -82,17 +82,21 @@ def add_question(cursor, title, message, id = None, submission_time = None, view
             }
     #connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     cursor.execute("""INSERT INTO question
-            (id, submission_time, view_number, vote_number, title, message, image)
-            VALUES (%(i_d)s, %(s_t)s, %(v_n)s, %(v_r)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
-                   {'i_d': question['id'],
-                    's_t': question['submission_time'],
-                    'v_n': question['view_number'],
-                    'v_r': question['vote_number'],
+            (submission_time, view_number, vote_number, title, message, image)
+            VALUES (%(s_t)s, %(vi_n)s, %(vo_n)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
+                   {'s_t': question['submission_time'],
+                    'vi_n': question['view_number'],
+                    'vo_n': question['vote_number'],
                     't_l': question['title'],
                     'm_g': question['message'],
                     'i_g': question['image']
                     })
-    return question["id"]
+    cursor.execute("""SELECT *
+        FROM question
+        WHERE title=%(t_l)s
+        """,
+        {'t_l': title})
+    return cursor.fetchall()
 
 
 @database_common.connection_handler

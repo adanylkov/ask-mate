@@ -20,8 +20,7 @@ def allowed_file(filename):
 @app.route("/question/<int:question_id>")
 def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
-    print(question)
-    #question['submission_time'] = util.convert_time(question['submission_time'])
+    question['submission_time'] = util.convert_time(question['submission_time'])
     # view_number = (question['view_number'])
     # data_manager.update_view_number(view_number, question_id)
     # answers = data_manager.answers_by_question_id(question_id)
@@ -34,8 +33,6 @@ def display_question(question_id):
 @app.route("/list")
 def question_list():
     question_list = data_manager.questions()
-
-
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
 
