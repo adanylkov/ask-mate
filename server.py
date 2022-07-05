@@ -18,7 +18,7 @@ def allowed_file(filename):
 
 
 @app.route("/question/<int:question_id>")
-def display_question(question_id):
+def display_question(question_id : int):
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     # view_number = (question['view_number'])
@@ -85,13 +85,11 @@ def del_question(question_id):
 
 @app.route("/answer/<int:answer_id>/delete", methods=['POST'])
 def del_answer(answer_id):
-    question_tupla = data_manager.del_answer(answer_id)
-    if question_tupla:
-        question_id = question_tupla[0]
-        #index = question_tupla[1]
-        return redirect(f"/question/{question_id}", 301)
-    else:
-        return redirect(url_for('question_list'))
+    answer = data_manager.get_answer_by_id(answer_id)
+    question_id = answer['question_id']
+    data_manager.del_answer(answer)
+
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 def image(question_id, answer_id=''):
@@ -159,7 +157,6 @@ def vote_up_answer(answer_id):
     vote_number = int(answer['vote_number'])
     updated_vote_number = data_manager.vote_up(vote_number)
     answer['vote_number'] = updated_vote_number
-    print(f"{answer=}")
     id = data_manager.edit_answer(answer)
     return redirect(f"/question/{id}", 301)
 

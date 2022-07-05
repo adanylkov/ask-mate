@@ -13,8 +13,9 @@ def get_image_by_id(question_id, answer_id = None):
 
 
 def delete_image(question):
-    image_folder = os.path.join(os.curdir, 'static')
     image_name = question.get('image')
+    if not image_name: return
+    image_folder = os.path.join(os.curdir, 'static')
     image_file = os.path.join(image_folder, image_name)
     if os.path.isfile(image_file):
         os.remove(image_file)
@@ -141,17 +142,16 @@ def del_question(question, edit : bool):
         connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
 
 
-def del_answer(answer_id, edit=False):
-    all_answers = answers()
-    for dicts in all_answers:
-        if dicts["id"] == str(answer_id):
-            if not edit:
-                delete_image(dicts)
-            index = all_answers.index(dicts)
-            all_answers.pop(index)
-            question_id = dicts["question_id"]
-            connection.write_data_to_file("answer.csv", all_answers, data_header=connection.ANSWER_HEADER)
-            return question_id, index
+@database_common.connection_handler
+def del_answer(cursor, answer):
+    delete_image(answer)
+    answer_id = answer['id']
+    query = """
+    DELETE 
+    FROM answer
+    WHERE id = %s
+    """
+    cursor.execute(query, (answer_id, ))
 
 
 def edit_answers_question_id(question_id, new_id):
