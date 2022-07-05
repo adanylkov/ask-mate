@@ -30,9 +30,15 @@ def get_question_by_id(cursor, id):
     question = list(map(util.question_datetime_to_epoch, questions))
     return question.pop() if question else None 
 
-def get_answer_by_id(id):
-    answers = connection.read_data_from_file('answer.csv')
-    return list(filter(lambda answer: answer['id'] == str(id), answers)).pop()
+@database_common.connection_handler
+def get_answer_by_id(cursor, id):
+    query = """
+    SELECT *
+    FROM answer
+    WHERE id = %s
+    """
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
 
 @database_common.connection_handler
 def answers_by_question_id(cursor, question_id):
@@ -165,19 +171,14 @@ def edit_question(question):
 
 
 
-def edit_answer(answer):
-    delete_question = del_answer(answer['id'], edit=True)
-    if delete_question:
-        index = delete_question[1]
-        add_answer(
-            id = answer['id'],
-            index = index,
-            question_id=answer['question_id'],
-            submission_time=answer['submission_time'],
-            message=answer['message'],
-            vote_number=answer['vote_number'],
-            image=answer['image']
-            )
+@database_common.connection_handler
+def edit_answer(cursor, answer):
+        query = """
+        UPDATE answer
+            SET vote_number = %s, message = %s, image = %s
+            WHERE id = %s
+        """
+        cursor.execute(query, (answer['vote_number'], answer['message'], answer['image'], answer['id']))
         return answer['question_id']
 
 def vote_up(vote_number):
