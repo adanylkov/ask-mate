@@ -173,7 +173,7 @@ def edit_question(cursor, question, title, message):
             # submission_time=question['submission_time'],
             "message": question['message'],
             # view_number=question['view_number'],
-            # vote_number=question['vote_number'],
+            # 'vote_number': question['vote_number'],
             "image": question['image']
             }
     query = """
@@ -187,12 +187,23 @@ def edit_question(cursor, question, title, message):
 @database_common.connection_handler
 def edit_answer(cursor, answer):
         query = """
-        UPDATE answer
+            UPDATE answer
             SET vote_number = %s, message = %s, image = %s
             WHERE id = %s
         """
         cursor.execute(query, (answer['vote_number'], answer['message'], answer['image'], answer['id']))
         return answer['question_id']
+
+
+@database_common.connection_handler
+def vote_update(cursor, updated_vote_number, question_id):
+    query = """
+        UPDATE question
+            SET vote_number = %s
+            WHERE id = %s
+        """
+    cursor.execute(query, (updated_vote_number, question_id))
+
 
 def vote_up(vote_number):
     if(vote_number):
