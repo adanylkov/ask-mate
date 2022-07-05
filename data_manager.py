@@ -163,19 +163,25 @@ def edit_answers_question_id(question_id, new_id):
     connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
 
 
-def edit_question(question):
-    del_question(question, edit=True)
-    edit_answers_question_id(question_id=question['id'], new_id=question['new_id'])
-    add_question(
-            title=question['title'],
-            id=question['new_id'],
-            submission_time=question['submission_time'],
-            message=question['message'],
-            view_number=question['view_number'],
-            vote_number=question['vote_number'],
-            image=question['image']
-            )
-
+@database_common.connection_handler
+def edit_question(cursor, question, title, message):
+    # del_question(question, edit=True)
+    # edit_answers_question_id(question_id=question['id'], new_id=question['new_id'])
+    add_question={
+            "title": question['title'],
+            # id=question['new_id'],
+            # submission_time=question['submission_time'],
+            "message": question['message'],
+            # view_number=question['view_number'],
+            # vote_number=question['vote_number'],
+            "image": question['image']
+            }
+    query = """
+    UPDATE question
+        SET title = %s, message = %s, image = %s
+        WHERE id = %s
+    """
+    cursor.execute(query, (title, message, add_question['image'], question['id']))
 
 
 @database_common.connection_handler

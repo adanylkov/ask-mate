@@ -118,14 +118,14 @@ def edit_question(question_id):
     else:
         title = request.form.get("title")
         message = request.form.get("message")
-        question['title'] = title
-        question['message'] = message
-        question['new_id'] = util.create_id()
-        image_name = image(question_id=question['new_id'])
-        if image_name:
-            question['image'] = f"images/{image_name}"
-        data_manager.edit_question(question)
-        return redirect(url_for('display_question', question_id=question['new_id']), 301)
+        # question['title'] = title
+        # question['message'] = message
+        # question['new_id'] = util.create_id()
+        # image_name = image(question_id=question['new_id'])
+        # if image_name:
+        #     question['image'] = f"images/{image_name}"
+        data_manager.edit_question(question, title, message)
+        return redirect(url_for('display_question', question_id=question['id']), 301)
  
 
 @app.route('/question/<int:question_id>/vote-up', methods = ['POST'])
