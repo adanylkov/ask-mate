@@ -1,8 +1,5 @@
 id,submission_time,vote_number,question_id,message,image
-1,1493398154,4,1,You need to use brackets: my_list = [],
-2,1493088154,35,1,Look it up in the Python docs,
-3,1655811187,0,9,bbb,
-10,1655905150,0,7,asdasd,
-20,1655989979,0,28,Maybe Visual Studio Code?,images/28_20.jpg
-21,1655989990,0,28,Yeah! 100%,
-22,1655990007,0,28,No fools! It's PyCharm ;),images/28_22.png
+1,2017-04-28 16:49:00,4,1,You need to use brackets: my_list = [],
+2,2017-04-25 14:42:00,35,1,Look it up in the Python docs,images/image2.jpg
+3,2022-07-05 21:45:30.517480,0,66,asdasd,
+4,2022-07-05 21:45:34.357435,0,66,asdasd,

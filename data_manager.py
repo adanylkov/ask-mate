@@ -208,13 +208,22 @@ def vote_down(vote_number):
         vote_number = -1
     return vote_number
 
-def update_view_number(view_number, question_id):
+
+@database_common.connection_handler
+def update_view_number(cursor, view_number, question_id):
     updated_view_number = int(view_number) + 1
-    all_questions = questions()
-    for dicts in all_questions:
-        if dicts["id"] == str(question_id):
-            dicts["view_number"] = str(updated_view_number)
-    connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
+    # all_questions = questions()
+    # for dicts in all_questions:
+    #     if dicts["id"] == str(question_id):
+    #         dicts["view_number"] = str(updated_view_number)
+    # connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
+    print(updated_view_number, question_id)
+    query = """
+    UPDATE question
+        SET view_number = %s
+        WHERE id = %s
+    """
+    cursor.execute(query, (updated_view_number, question_id))
 
 
 if __name__ == "__main__":
