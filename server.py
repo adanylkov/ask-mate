@@ -21,20 +21,18 @@ def allowed_file(filename):
 def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
-    view_number = (question['view_number'])
-    data_manager.update_view_number(view_number, question_id)
-    answers = data_manager.answers_by_question_id(question_id)
-    for ans in answers:
-        ans['submission_time'] = util.convert_time(ans['submission_time'])
-    return render_template("question-template.html", question=question, answers=answers)
+    # view_number = (question['view_number'])
+    # data_manager.update_view_number(view_number, question_id)
+    # answers = data_manager.answers_by_question_id(question_id)
+    # for ans in answers:
+    #     ans['submission_time'] = util.convert_time(ans['submission_time'])
+    return render_template("question-template.html", question=question)#, answers=answers)
 
 
 @app.route("/")
 @app.route("/list")
 def question_list():
     question_list = data_manager.questions()
-
-
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
 
@@ -50,11 +48,13 @@ def ask_question():
     if request.method=="POST":
         title = request.form.get("title")
         message = request.form.get("message")
-        id = util.create_id()
-        image_name = image(question_id=id)
+        # id = data_manager.
+        # id = 0 # need the id from newly created question
+        image_name = image(question_id=0)
         if image_name:
             image_name = f"images/{image_name}"
-        data_manager.add_question(title, message, id=id, image=image_name)
+        get_id = data_manager.add_question(title, message, image=image_name)
+        id = get_id['id']
         return redirect(f"/question/{id}", 301)
     elif request.method=="GET":
         return render_template("ask-question.html")
