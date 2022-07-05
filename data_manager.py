@@ -38,7 +38,8 @@ def questions(cursor):
         FROM question
         """
     cursor.execute(query)
-    return cursor.fetchall()
+    questions = cursor.fetchall()
+    return list(map(util.question_datetime_to_epoch, questions))
 #
 #     questions = connection.read_data_from_file('question.csv')
 #     return questions

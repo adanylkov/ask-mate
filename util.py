@@ -1,5 +1,6 @@
 import time
 import connection
+import datetime
 
 
 def convert_time(timestamp, format="%d %B %Y, %H:%M"):
@@ -9,6 +10,12 @@ def convert_time(timestamp, format="%d %B %Y, %H:%M"):
 
 def make_timestamp():
     return int(time.time())
+
+
+def question_datetime_to_epoch(question):
+    datetime = question.get('submission_time')
+    question['submission_time'] = int(datetime.timestamp()) if datetime else 0
+    return question
 
 
 def create_id(is_question=True):
@@ -32,7 +39,7 @@ def sort_by(question, order):
             }
 
     func, key = sort_by[order]
-    return func(question[key].lower())
+    return func(str(question[key]).lower())
 
 
 if __name__ == "__main__":
