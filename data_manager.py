@@ -1,7 +1,7 @@
 import connection
 import util
 import os
-
+import database_common
 
 def get_image_by_id(question_id, answer_id = None):
     images = os.listdir(os.path.join(os.curdir, 'static','images'))
@@ -30,9 +30,18 @@ def answers_by_question_id(question_id):
     answers = connection.read_data_from_file('answer.csv')
     return list(filter(lambda answer: answer['question_id'] == str(question_id), answers))
 
-def questions():
-    questions = connection.read_data_from_file('question.csv')
-    return questions
+
+@database_common.connection_handler
+def questions(cursor):
+    query = """
+        SELECT *
+        FROM question
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+#
+#     questions = connection.read_data_from_file('question.csv')
+#     return questions
 
 def answers():
     answers = connection.read_data_from_file('answer.csv')
