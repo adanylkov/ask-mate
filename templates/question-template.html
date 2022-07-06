@@ -11,21 +11,6 @@
         {%- from "question.html" import show_question %}
         {{ show_question(question, current_tags, question_id) }}
     </div>
-    <div class="comments">
-      {% for comment in comments %}
-        {% if comment.question_id and not comment.answer_id %}
-          <small>{{ comment.message }}</small><br>
-          <small>{{ comment.submission_time }}</small>
-          <form action="/comment/{{ comment.id }}/edit" method="get">
-            <input type="submit" value="Edit comment">
-          </form>
-          <form action="/comment/{{ comment.id }}/delete" method="post">
-            <input type="submit" value="Delete comment">
-          </form>
-          <br><br>
-        {% endif %}
-      {% endfor %}
-    </div>
     {% if answers %}
     <div class="answers">
         <h2>Answers:</h2>
@@ -46,27 +31,11 @@
               </form>
             </div>
             <small>Posted on: {{ answer['submission_time'] }}</small><br>
-            <form action="/answer/{{ answer['id'] }}/new-comment" method="get">
-                <input type="submit" value="Add new comment to answer" />
-            </form><br>
             <form action="/answer/{{ answer['id'] }}/delete" method="post">
                 <input type="submit" value="Delete the answer" />
             </form><br>
-            {% for comment in comments %}
-              {% if comment.answer_id == answer.id %}
-                <small>{{ comment.message }}</small><br>
-                <small>{{ comment.submission_time }}</small>
-                <br><br>
-                <form action="/comment/{{ comment.id }}/edit" method="get">
-                  <input type="submit" value="Edit comment">
-                </form>
-                <form action="/comment/{{ comment.id }}/delete" method="post">
-                  <input type="submit" value="Delete comment">
-                </form>
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
-      </div>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <br>
@@ -93,12 +62,6 @@
 
     <form action="/question/{{ question['id'] }}/edit">
         <input type="submit" value="Edit a question" />
-    </form>
-
-    <br>
-
-    <form action="/question/{{ question['id'] }}/new-comment">
-        <input type="submit" value="Add comment to question" />
     </form>
 
 </body>
