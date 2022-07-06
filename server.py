@@ -128,6 +128,7 @@ def vote_down(question_id):
     data_manager.vote_update(updated_vote_number, question_id)
     return redirect("/", 301)
 
+
 @app.route('/answer/<int:answer_id>/vote-up', methods = ['POST'])
 def vote_up_answer(answer_id):
     answer = data_manager.get_answer_by_id(answer_id)
