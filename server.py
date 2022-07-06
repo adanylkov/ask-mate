@@ -17,10 +17,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/question/<int:question_id>")
+@app.route("/question/<int:question_id>", methods=['GET', 'POST'])
 def display_question(question_id : int):
-    current_tags = data_manager.get_tags()
-    print(current_tags)
+    if request.method == 'POST':
+        req_tag = request.values.get('tags-name')
+        print(f'{req_tag=}{question_id=}')
+    #current_tags = data_manager.get_tags()
+    current_tags = data_manager.get_tag_for_question(question_id)
+    #print(get_tag)
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])
@@ -150,7 +154,7 @@ def vote_down_answer(answer_id):
     return redirect(f"/question/{id}", 301)
 
 
-@app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
+@app.route('/question/<question_id>/new-tag')
 def new_tag(question_id):
     current_tags = data_manager.get_tags()
     return render_template('question-new-tag.html', id=question_id, current_tags=current_tags)

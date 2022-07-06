@@ -4,7 +4,7 @@
         <div id="tag">
             <a href="/question/{{ question['id'] }}/new-tag">Add a tag</a>
             {% for tags in current_tags %}
-                {% if tags['id'] == question_id %}
+                {% if tags['question_id'] == question_id %}
                     {{ tags['name'] }}<a href="/question/{{ question_id }}/tag/{{ tags['id'] }}/delete">x </a>
                 {% endif %}
             {% endfor %}

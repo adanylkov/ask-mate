@@ -8,10 +8,11 @@
     <h1>Please select a tag</h1>
     Question id: {{ id }}
     <h3>Choose a tag:</h3>
-    <form id="tag-button" action="/question/{{ id }}" method="post">
+    <form id="tag-button" action="/question/{{ id }}" name="tags-name" method="post">
     {% for tags in current_tags %}
-            <button type="submit">{{ tags['name'] }}</button>
+            <label>{{ tags['name'] }}<input type="radio" name="tags-name" value={{ tags['name'] }} /></label>
     {% endfor %}
+    <button id="tags-name" name="tags-name" type="submit">Add</button>
     </form>
 </body>
 </html>

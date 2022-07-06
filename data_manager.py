@@ -224,6 +224,18 @@ def get_tags(cursor):
     '''
     cursor.execute(query)
     return cursor.fetchall()
+
+@database_common.connection_handler
+def get_tag_for_question(cursor, question_id):
+    query = f'SELECT question_id, name\
+    FROM question_tag\
+    INNER JOIN tag\
+        ON question_tag.tag_id = tag.id\
+    WHERE question_id = {question_id}'
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 # ====== TEST =========
 # if __name__ == "__main__":
 #     edit_answers_question_id(461,462)
