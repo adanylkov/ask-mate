@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add a tag</title>
+</head>
+<body>
+    <h1>Please select a tag</h1>
+    Question id: {{ id }}
+    <h3>Choose a tag:</h3>
+    <form id="tag-button" action="/question/{{ id }}" method="post">
+    {% for tags in current_tags %}
+            <button type="submit">{{ tags['name'] }}</button>
+    {% endfor %}
+    </form>
+</body>
+</html>

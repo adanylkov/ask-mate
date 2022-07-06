@@ -216,7 +216,14 @@ def update_view_number(cursor, view_number, question_id):
     """
     cursor.execute(query, (updated_view_number, question_id))
 
-
+@database_common.connection_handler
+def get_tags(cursor):
+    query = '''
+        SELECT *
+        FROM tag
+    '''
+    cursor.execute(query)
+    return cursor.fetchall()
 # ====== TEST =========
 # if __name__ == "__main__":
 #     edit_answers_question_id(461,462)

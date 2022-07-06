@@ -19,13 +19,15 @@ def allowed_file(filename):
 
 @app.route("/question/<int:question_id>")
 def display_question(question_id : int):
+    current_tags = data_manager.get_tags()
+    print(current_tags)
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])
     data_manager.update_view_number(view_number, question_id)
     answers = data_manager.answers_by_question_id(question_id)
     for ans in answers: ans['submission_time'] = util.convert_time(ans['submission_time'])
-    return render_template("question-template.html", question=question, answers=answers)
+    return render_template("question-template.html", question=question, answers=answers, current_tags=current_tags, question_id=question_id)
 
 
 @app.route("/")
@@ -128,7 +130,6 @@ def vote_down(question_id):
     data_manager.vote_update(updated_vote_number, question_id)
     return redirect("/", 301)
 
-
 @app.route('/answer/<int:answer_id>/vote-up', methods = ['POST'])
 def vote_up_answer(answer_id):
     answer = data_manager.get_answer_by_id(answer_id)
@@ -147,6 +148,12 @@ def vote_down_answer(answer_id):
     answer['vote_number'] = updated_vote_number
     id = data_manager.edit_answer(answer)
     return redirect(f"/question/{id}", 301)
+
+
+@app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
+def new_tag(question_id):
+    current_tags = data_manager.get_tags()
+    return render_template('question-new-tag.html', id=question_id, current_tags=current_tags)
 
 
 if __name__ == "__main__":
