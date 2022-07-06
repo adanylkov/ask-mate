@@ -19,8 +19,6 @@ def question_datetime_to_epoch(question):
     return question
 
 
-
-
 def create_id(is_question=True):
     id = connection.read_last_id("last_id.txt")
     question_id, answer_id = id.split(',')
@@ -49,9 +47,10 @@ def random_identificator():
     return ''.join(random.choices(string.ascii_letters + string.digits, k = 16))
 
 
-if __name__ == "__main__":
-    import data_manager
-    question = data_manager.get_question_by_id(1)
-    ret = sort_by(question, "number_of_views")
-    print(f'{ret=}')
-    print(f'{type(ret)=}')
+# ======== TEST ============
+# if __name__ == "__main__":
+#     import data_manager
+#     question = data_manager.get_question_by_id(1)
+#     ret = sort_by(question, "number_of_views")
+#     print(f'{ret=}')
+#     print(f'{type(ret)=}')

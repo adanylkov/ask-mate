@@ -1,4 +1,3 @@
-import connection
 import util
 import os
 import database_common
@@ -21,7 +20,6 @@ def delete_image(question):
         os.remove(image_file)
 
 
-
 @database_common.connection_handler
 def get_question_by_id(cursor, id):
     query = """
@@ -34,6 +32,7 @@ def get_question_by_id(cursor, id):
     question = list(map(util.question_datetime_to_epoch, questions))
     return question.pop() if question else None 
 
+
 @database_common.connection_handler
 def get_answer_by_id(cursor, id):
     query = """
@@ -43,6 +42,7 @@ def get_answer_by_id(cursor, id):
     """
     cursor.execute(query, (id,))
     return cursor.fetchone()
+
 
 @database_common.connection_handler
 def answers_by_question_id(cursor, question_id):
@@ -68,6 +68,7 @@ def questions(cursor):
     cursor.execute(query)
     questions = cursor.fetchall()
     return list(map(util.question_datetime_to_epoch, questions))
+
 
 @database_common.connection_handler
 def answers(cursor):
@@ -102,7 +103,6 @@ def add_question(cursor, title, message, submission_time = None, view_number = N
     query = """SELECT id FROM question ORDER BY id DESC LIMIT 1"""
     cursor.execute(query)
     return cursor.fetchone().get('id')
-
 
 
 @database_common.connection_handler
@@ -157,14 +157,6 @@ def del_answer(cursor, answer):
     cursor.execute(query, (answer_id, ))
 
 
-def edit_answers_question_id(question_id, new_id):
-    all_answers = connection.read_data_from_file('answer.csv')
-    for answer in all_answers:
-        if answer['question_id'] == str(question_id):
-            answer['question_id'] = str(new_id)
-    connection.write_data_to_file('answer.csv', data=all_answers, data_header=connection.ANSWER_HEADER)
-
-
 @database_common.connection_handler
 def edit_question(cursor, question, title, message, image_name):
     query = """
@@ -187,6 +179,7 @@ def edit_answer(cursor, answer):
         cursor.execute(query, (answer['vote_number'], answer['message'], answer['image'], answer['id']))
         return answer['question_id']
 
+
 @database_common.connection_handler
 def vote_update(cursor, updated_vote_number, question_id):
     query = """
@@ -196,13 +189,15 @@ def vote_update(cursor, updated_vote_number, question_id):
         """
     cursor.execute(query, (updated_vote_number, question_id))
 
+
 def vote_up(vote_number):
     if(vote_number):
         vote_number +=1
     else:
         vote_number = 1
     return vote_number
-    
+
+
 def vote_down(vote_number):  
     if(vote_number):
         vote_number -=1
@@ -222,5 +217,6 @@ def update_view_number(cursor, view_number, question_id):
     cursor.execute(query, (updated_view_number, question_id))
 
 
-if __name__ == "__main__":
-    edit_answers_question_id(461,462)
+# ====== TEST =========
+# if __name__ == "__main__":
+#     edit_answers_question_id(461,462)

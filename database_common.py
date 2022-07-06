@@ -34,7 +34,9 @@ def open_database():
         raise exception
     return connection
 
+
 P = ParamSpec("P")
+
 
 def connection_handler(function: Callable[Concatenate[psycopg2.extras.RealDictCursor, P], Any]) -> Callable[P, Any]:
     def wrapper(*args : P.args, **kwargs: P.kwargs):
