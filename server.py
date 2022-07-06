@@ -26,6 +26,7 @@ def display_question(question_id : int):
         data_manager.create_new_tag(new_tag)
     data_manager.remove_none_tags()
     current_tags = data_manager.get_tag_for_question(question_id)
+    all_tags = data_manager.get_tags() # all tags ids
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])
@@ -34,7 +35,7 @@ def display_question(question_id : int):
     comments = data_manager.get_comments_by_question_id(question_id)
     for ans in answers: ans['submission_time'] = util.convert_time(ans['submission_time'])
     for com in comments: com['submission_time'] = util.convert_time(com['submission_time'])
-    return render_template("question-template.html", question=question, answers=answers, current_tags=current_tags, question_id=question_id)
+    return render_template("question-template.html", question=question, answers=answers, current_tags=current_tags, question_id=question_id, all_tags=all_tags)
 
 
 @app.route("/")

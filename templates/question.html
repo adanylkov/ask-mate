@@ -1,11 +1,15 @@
-{% macro show_question(question, current_tags, question_id) %}
+{% macro show_question(question, current_tags, question_id, all_tags) %}
         <h2>Question:</h2>
         <h3>{{ question['title'] }}</h3>
-        <div id="tag">
+        <div id="tag" name="asd">
             <a href="/question/{{ question['id'] }}/new-tag">Add a tag</a>
             {% for tags in current_tags %}
                 {% if tags['question_id'] == question_id %}
-                    {{ tags['name'] }}<a href="/question/{{ question_id }}/tag/{{ tags['name'] }}/delete">x </a>
+                    {% for ids in all_tags %}
+                        {% if ids['name'] == tags['name'] %}
+                            {{ tags['name'] }}<a href="/question/{{ question_id }}/tag/{{ ids['id'] }}/delete">x </a>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             {% endfor %}
         </div>
