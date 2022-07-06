@@ -1,3 +1,5 @@
+import psycopg2.errors
+
 import util
 import os
 import database_common
@@ -240,7 +242,10 @@ def get_tag_for_question(cursor, question_id):
 def add_tag_to_question(cursor, question_id, req_tag_id):
     query = f'INSERT INTO public.question_tag (question_id, tag_id)\
                 VALUES ({question_id}, {req_tag_id})'
-    cursor.execute(query)
+    try:
+        cursor.execute(query)
+    except:
+        pass
 
 
 @database_common.connection_handler
