@@ -224,8 +224,18 @@ def get_tags(cursor):
         SELECT *
         FROM tag
     '''
-    cursor.execute(query)
+    query1 = '''DELETE FROM tag
+                WHERE name = 'None' '''
+    cursor.execute(query, query1)
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def remove_none_tags(cursor):
+    query = '''DELETE FROM tag
+                WHERE name = 'None' '''
+    cursor.execute(query)
+
 
 @database_common.connection_handler
 def get_tag_for_question(cursor, question_id):
@@ -245,7 +255,9 @@ def add_tag_to_question(cursor, question_id, req_tag_id):
     try:
         cursor.execute(query)
     except:
-        pass
+        query = '''DELETE FROM tag
+                    WHERE name = 'None' '''
+        cursor.execute(query)
 
 
 @database_common.connection_handler

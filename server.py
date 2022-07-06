@@ -24,6 +24,7 @@ def display_question(question_id : int):
         new_tag = request.values.get('create-new-tag')
         data_manager.add_tag_to_question(question_id, req_tag_id)
         data_manager.create_new_tag(new_tag)
+    data_manager.remove_none_tags()
     current_tags = data_manager.get_tag_for_question(question_id)
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
@@ -159,6 +160,7 @@ def vote_down_answer(answer_id):
 @app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
 def new_tag(question_id):
     current_tags = data_manager.get_tags()
+    data_manager.remove_none_tags()
     return render_template('question-new-tag.html', id=question_id, current_tags=current_tags)
 
 
