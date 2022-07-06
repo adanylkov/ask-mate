@@ -17,22 +17,17 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/question/<int:question_id>", methods=['GET', 'POST'])
+@app.route("/question/<int:question_id>")
 def display_question(question_id : int):
-    if request.method == 'POST':
-        req_tag_id = request.values.get('tags-name')
-        print(f'{req_tag_id=}{question_id=}')
-        data_manager.add_tag_to_question(question_id, req_tag_id)
-    current_tags = data_manager.get_tag_for_question(question_id)
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])
     data_manager.update_view_number(view_number, question_id)
     answers = data_manager.answers_by_question_id(question_id)
-    comments = data_manager.get_comments_by_question_id(question_id)
     for ans in answers: ans['submission_time'] = util.convert_time(ans['submission_time'])
     for com in comments: com['submission_time'] = util.convert_time(com['submission_time'])
     return render_template("question-template.html", question=question, answers=answers, current_tags=current_tags, question_id=question_id)
+
 
 
 @app.route("/")

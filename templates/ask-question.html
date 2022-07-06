@@ -3,23 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Ask mate - ask a question{% endblock %}</title>
+    <title>Ask mate - ask a question</title>
 </head>
 
 <body>
-  <h1>{% block h %}Ask a question{% endblock %}</h1><br>
+    <h1>Ask a question</h1><br>
     <form action="{{ action|default('/ask-question') }}" method="post" enctype="multipart/form-data">
-        {% if show_title|default(True) %}
-          Title <input name="title" value="{% block question_title %}{% endblock %}" required><br>
-        {% endif %}
-        <label>Body: </label><br>
-        <textarea name="message" rows="20" cols="60" placeholder="{% block placeholder %}Insert a question{% endblock %}"
+        Title <input name="title" value="{% block question_title %}{% endblock %}" required><br>
+        <label>Question:</label><br>
+        <textarea name="message" rows="20" cols="60" placeholder="Insert a question"
             required>{% block question_body %}{% endblock %}</textarea><br>
-        {% if show_image|default(True) %}
-          <label for="image">Upload image:</label>
-          <input name="image" type="file" accept="image/png, image/jpeg">
-        {% endif %}
-        <button type="submit">{% block submit %}Submit my question{% endblock %}</button>
+        <label for="image">Upload image:</label>
+        <input name="image" type="file" accept="image/png, image/jpeg">
+        <button type="submit">Submit my question</button>
     </form>
 </body>
 
