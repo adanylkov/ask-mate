@@ -85,13 +85,10 @@ def del_answer(answer_id):
 
 def image():
     if request.method == 'POST':
-        # check if the post request has the file part
         if 'image' not in request.files:
             flash('No file part')
             return None
         file = request.files['image']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
         if file.filename == '':
             flash('No selected file')
             return None
@@ -109,11 +106,6 @@ def edit_question(question_id):
     else:
         title = request.form.get("title")
         message = request.form.get("message")
-        # question['title'] = title
-        # question['message'] = message
-        # question['new_id'] = util.create_id()
-        # if image_name:
-        #     question['image'] = f"images/{image_name}"
         image_name = image()
         data_manager.edit_question(question, title, message, image_name)
         return redirect(url_for('display_question', question_id=question['id']), 301)
@@ -125,11 +117,6 @@ def vote_up(question_id):
     vote_number = int(question['vote_number'])
     updated_vote_number = data_manager.vote_up(vote_number)
     data_manager.vote_update(updated_vote_number, question_id)
-    # edit_question(question, question['title'], question['message'], updated_vote_number)
-    # question['vote_number'] = updated_vote_number
-    # id = util.create_id()
-    # question['new_id'] = id
-    # data_manager.edit_question(question)
     return redirect("/", 301)
 
 
@@ -139,13 +126,8 @@ def vote_down(question_id):
     vote_number = int(question['vote_number'])
     updated_vote_number = data_manager.vote_down(vote_number)
     data_manager.vote_update(updated_vote_number, question_id)
-    # question['vote_number'] = updated_vote_number
-    # id = util.create_id()
-    # question['new_id'] = id
-    # data_manager.edit_question(question)
     return redirect("/", 301)
 
-#answer
 @app.route('/answer/<int:answer_id>/vote-up', methods = ['POST'])
 def vote_up_answer(answer_id):
     answer = data_manager.get_answer_by_id(answer_id)

@@ -68,9 +68,6 @@ def questions(cursor):
     cursor.execute(query)
     questions = cursor.fetchall()
     return list(map(util.question_datetime_to_epoch, questions))
-#
-#     questions = connection.read_data_from_file('question.csv')
-#     return questions
 
 @database_common.connection_handler
 def answers(cursor):
@@ -92,7 +89,6 @@ def add_question(cursor, title, message, submission_time = None, view_number = N
             "message": message,
             "image": image
             }
-    #connection.add_data_to_file("question.csv", question, connection.QUESTION_HEADER)
     cursor.execute("""INSERT INTO question
             (submission_time, view_number, vote_number, title, message, image)
             VALUES (%(s_t)s, %(vi_n)s, %(vo_n)s, %(t_l)s, %(m_g)s, %(i_g)s)""",
@@ -218,11 +214,6 @@ def vote_down(vote_number):
 @database_common.connection_handler
 def update_view_number(cursor, view_number, question_id):
     updated_view_number = int(view_number) + 1
-    # all_questions = questions()
-    # for dicts in all_questions:
-    #     if dicts["id"] == str(question_id):
-    #         dicts["view_number"] = str(updated_view_number)
-    # connection.write_data_to_file("question.csv", all_questions, data_header=connection.QUESTION_HEADER)
     query = """
     UPDATE question
         SET view_number = %s
