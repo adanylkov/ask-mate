@@ -249,6 +249,12 @@ def add_tag_to_question(cursor, question_id, req_tag_id):
 
 
 @database_common.connection_handler
+def create_new_tag(cursor, new_tag):
+    query = f"INSERT INTO public.tag (name) VALUES ('{new_tag}')"
+    cursor.execute(query)
+
+
+@database_common.connection_handler
 def add_comment(cursor, comment):
     query = """
     INSERT INTO comment (question_id, answer_id, message, submission_time)

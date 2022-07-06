@@ -14,6 +14,11 @@
         {% endfor %}
         <button id="tags-name" name="tags-name" type="submit">Add</button>
     </form>
+    <form action="/question/{{ id }}" name="define-new-tag" method="post">
+        <label>Create new tag:</label>
+        <input maxlength="15" name="create-new-tag" required>
+        <button>Create</button>
+    </form>
     <button><a href="/question/{{ id }}">Return</a></button>
 </body>
 </html>

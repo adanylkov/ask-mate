@@ -21,8 +21,9 @@ def allowed_file(filename):
 def display_question(question_id : int):
     if request.method == 'POST':
         req_tag_id = request.values.get('tags-name')
-        print(f'{req_tag_id=}{question_id=}')
+        new_tag = request.values.get('create-new-tag')
         data_manager.add_tag_to_question(question_id, req_tag_id)
+        data_manager.create_new_tag(new_tag)
     current_tags = data_manager.get_tag_for_question(question_id)
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
@@ -155,7 +156,7 @@ def vote_down_answer(answer_id):
     return redirect(f"/question/{id}", 301)
 
 
-@app.route('/question/<question_id>/new-tag')
+@app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
 def new_tag(question_id):
     current_tags = data_manager.get_tags()
     return render_template('question-new-tag.html', id=question_id, current_tags=current_tags)
