@@ -9,7 +9,7 @@
 <body>
     <div class="question">
         {%- from "question.html" import show_question %}
-        {{ show_question(question) }}
+        {{ show_question(question, current_tags, question_id) }}
     </div>
     <div class="comments">
       {% for comment in comments %}
