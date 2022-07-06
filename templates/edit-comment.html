@@ -1,0 +1,10 @@
+{% extends "ask-question.html" %}
+{% block title %}Ask-mate - edit comment{% endblock %}
+{% block h %}Edit comment{% endblock %}
+{% set action = "/comment/" ~ comment.id ~ "/edit" %}
+{% set show_image = False %}
+{% set show_title = False %}
+{% block placeholder %}{% endblock %}
+{% block question_title %}{% endblock %}
+{% block question_body %}{{ comment.message }}{% endblock %}
+{% block submit %}Edit comment{% endblock %}
