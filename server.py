@@ -194,10 +194,12 @@ def edit_comment(comment_id: int):
         if not question_id: return redirect(url_for('question_list'))
         return redirect(url_for('display_question', question_id=question_id))
 
+
 @app.route('/comment/<int:comment_id>/delete', methods = ['POST'])
 def delete_comment(comment_id: int):
     question_id = data_manager.delete_comment(comment_id)
     return redirect(url_for('display_question', question_id=question_id))
+
 
 if __name__ == "__main__":
     app.run(
