@@ -236,6 +236,13 @@ def get_tag_for_question(cursor, question_id):
     return cursor.fetchall()
 
 
+@database_common.connection_handler
+def add_tag_to_question(cursor, question_id, req_tag_id):
+    query = f'INSERT INTO public.question_tag (question_id, tag_id)\
+                VALUES ({question_id}, {req_tag_id})'
+    cursor.execute(query)
+
+
 # ====== TEST =========
 # if __name__ == "__main__":
 #     edit_answers_question_id(461,462)

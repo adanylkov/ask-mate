@@ -20,11 +20,10 @@ def allowed_file(filename):
 @app.route("/question/<int:question_id>", methods=['GET', 'POST'])
 def display_question(question_id : int):
     if request.method == 'POST':
-        req_tag = request.values.get('tags-name')
-        print(f'{req_tag=}{question_id=}')
-    #current_tags = data_manager.get_tags()
+        req_tag_id = request.values.get('tags-name')
+        print(f'{req_tag_id=}{question_id=}')
+        data_manager.add_tag_to_question(question_id, req_tag_id)
     current_tags = data_manager.get_tag_for_question(question_id)
-    #print(get_tag)
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])

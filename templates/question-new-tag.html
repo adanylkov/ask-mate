@@ -9,10 +9,11 @@
     Question id: {{ id }}
     <h3>Choose a tag:</h3>
     <form id="tag-button" action="/question/{{ id }}" name="tags-name" method="post">
-    {% for tags in current_tags %}
-            <label>{{ tags['name'] }}<input type="radio" name="tags-name" value={{ tags['name'] }} /></label>
-    {% endfor %}
-    <button id="tags-name" name="tags-name" type="submit">Add</button>
+        {% for tags in current_tags %}
+            <label>{{ tags['name'] }}<input type="radio" name="tags-name" required value={{ tags['id'] }} /></label>
+        {% endfor %}
+        <button id="tags-name" name="tags-name" type="submit">Add</button>
     </form>
+    <button><a href="/">Return</a></button>
 </body>
 </html>
