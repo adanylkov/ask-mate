@@ -26,7 +26,7 @@ def display_question(question_id : int):
         data_manager.create_new_tag(new_tag)
     data_manager.remove_none_tags()
     current_tags = data_manager.get_tag_for_question(question_id)
-    all_tags = data_manager.get_tags() # all tags ids
+    all_tags = data_manager.get_tags()
     question = data_manager.get_question_by_id(question_id)
     question['submission_time'] = util.convert_time(question['submission_time'])
     view_number = (question['view_number'])
@@ -164,6 +164,12 @@ def new_tag(question_id):
     data_manager.remove_none_tags()
     return render_template('question-new-tag.html', id=question_id, current_tags=current_tags)
 
+
+@app.route('/question/<int:question_id>/tag/<int:tag_id>/delete')
+def remove_tag_from_question(question_id, tag_id):
+    print('dd')
+    data_manager.remove_tag(question_id, tag_id)
+    return redirect (f'/question/{question_id}', 301)
 
 
 @app.route('/answer/<int:answer_id>/new-comment', methods = ['GET', 'POST'])

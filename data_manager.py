@@ -231,6 +231,13 @@ def get_tags(cursor):
 
 
 @database_common.connection_handler
+def remove_tag(cursor, question_id, tag_id):
+    query = f'DELETE FROM question_tag\
+                WHERE question_id = {question_id}\
+                AND tag_id = {tag_id}'
+    cursor.execute(query)
+
+@database_common.connection_handler
 def remove_none_tags(cursor):
     query = '''DELETE FROM tag
                 WHERE name = 'None' '''
