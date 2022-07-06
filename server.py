@@ -24,8 +24,10 @@ def display_question(question_id : int):
     view_number = (question['view_number'])
     data_manager.update_view_number(view_number, question_id)
     answers = data_manager.answers_by_question_id(question_id)
+    comments = data_manager.get_comments_by_question_id(question_id)
     for ans in answers: ans['submission_time'] = util.convert_time(ans['submission_time'])
-    return render_template("question-template.html", question=question, answers=answers)
+    for com in comments: com['submission_time'] = util.convert_time(com['submission_time'])
+    return render_template("question-template.html", question=question, answers=answers, comments=comments)
 
 
 @app.route("/")
@@ -147,6 +149,43 @@ def vote_down_answer(answer_id):
     id = data_manager.edit_answer(answer)
     return redirect(f"/question/{id}", 301)
 
+
+@app.route('/answer/<int:answer_id>/new-comment', methods = ['GET', 'POST'])
+@app.route('/question/<int:question_id>/new-comment', methods = ['GET', 'POST'])
+def add_comment(question_id = None, answer_id = None):
+    if request.method == 'GET':
+        return render_template('add-comment.html')
+    else:
+        comment = {
+                'message': request.form.get('message'),
+                'question_id': question_id,
+                'answer_id': answer_id,
+                'submission_time': util.make_timestamp()
+                }
+        if not question_id:
+            question_id = data_manager.get_question_id_by_answer_id(answer_id)
+            comment['question_id'] = question_id
+        data_manager.add_comment(comment)
+        return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route('/comment/<int:comment_id>/edit', methods = ['GET', 'POST'])
+def edit_comment(comment_id: int):
+    comment = data_manager.get_comment_by_id(comment_id)
+    if request.method == 'GET':
+        return render_template('edit-comment.html', comment=comment)
+    else:
+        comment['message'] = request.form.get('message')
+        comment['edited_count'] = 1 if not comment['edited_count'] else comment['edited_count'] + 1
+        data_manager.edit_comment(comment)
+        question_id = comment.get('question_id')
+        if not question_id: return redirect(url_for('question_list'))
+        return redirect(url_for('display_question', question_id=question_id))
+
+@app.route('/comment/<int:comment_id>/delete', methods = ['POST'])
+def delete_comment(comment_id: int):
+    question_id = data_manager.delete_comment(comment_id)
+    return redirect(url_for('display_question', question_id=question_id))
 
 if __name__ == "__main__":
     app.run(

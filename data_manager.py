@@ -217,6 +217,79 @@ def update_view_number(cursor, view_number, question_id):
     cursor.execute(query, (updated_view_number, question_id))
 
 
-# ====== TEST =========
-# if __name__ == "__main__":
-#     edit_answers_question_id(461,462)
+@database_common.connection_handler
+def add_comment(cursor, comment):
+    query = """
+    INSERT INTO comment (question_id, answer_id, message, submission_time)
+    VALUES (%s, %s, %s, %s)
+    """
+    cursor.execute(query, (comment['question_id'], comment['answer_id'], comment['message'], comment['submission_time']))
+
+
+@database_common.connection_handler
+def get_comment_by_id(cursor, comment_id):
+    query = """
+    SELECT * 
+    FROM comment
+    WHERE id = %s
+    """
+    cursor.execute(query, (comment_id, ))
+    return cursor.fetchone()
+
+@database_common.connection_handler
+def get_comments_by_question_id(cursor, question_id):
+    query = """
+    SELECT * 
+    FROM comment
+    WHERE question_id = %s
+    ORDER BY id ASC
+    """
+    cursor.execute(query, (question_id, ))
+    comments = cursor.fetchall()
+    return list(map(util.question_datetime_to_epoch, comments))
+
+
+@database_common.connection_handler
+def get_comments_by_answer_id(cursor, answer_id):
+    query = """
+    SELECT * 
+    FROM comment
+    WHERE answer_id = %s
+    """
+    cursor.execute(query, (answer_id, ))
+    comments = cursor.fetchall()
+    return list(map(util.question_datetime_to_epoch, comments))
+
+
+@database_common.connection_handler
+def get_question_id_by_answer_id(cursor, answer_id):
+    query = """
+    SELECT question_id
+    FROM answer
+    WHERE id = %s
+    """
+    cursor.execute(query, (answer_id, ))
+    return cursor.fetchone().get('question_id')
+
+
+
+@database_common.connection_handler
+def edit_comment(cursor, comment):
+    query = """
+    UPDATE comment
+        SET message = %s, edited_count = %s
+        WHERE id = %s
+    """
+    cursor.execute(query, (comment['message'], comment['edited_count'], comment['id'], ))
+
+
+@database_common.connection_handler
+def delete_comment(cursor, comment_id):
+    query = """
+    DELETE
+    FROM comment
+    WHERE id = %s
+    RETURNING question_id
+    """
+    cursor.execute(query, (comment_id, ))
+    return cursor.fetchone()['question_id']
