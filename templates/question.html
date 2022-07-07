@@ -1,27 +1,35 @@
 {% macro show_question(question, current_tags, question_id, all_tags) %}
-        <h2>Question:</h2>
-        <h3>{{ question['title'] }}</h3>
-        <div id="tag" name="asd">
-            <a href="/question/{{ question['id'] }}/new-tag">Add a tag</a>
-            {% for tags in current_tags %}
-                {% if tags['question_id'] == question_id %}
-                    {% for ids in all_tags %}
-                        {% if ids['name'] == tags['name'] %}
-                                <form action="/question/{{ question_id }}/tag/{{ ids['id'] }}/delete" method="post">
-                                    {{ tags['name'] }}<button type="submit">x </button>
+        <div class="summary-content">
+          <h3>{{ question['title'] }}</h3>
+          {% if question['image'] %}
+          {% set url=url_for('static', filename=question['image']) %}
+              <img src="{{ url }}" width="100">
+          {% endif %}
+          <p>
+              {{ question['message'] }}
+          </p>
+          <div class="summary-stats">
+            <div class="tags" name="asd">
+                <!-- <a href="/question/{{ question['id'] }}/new-tag">Add a tag</a> -->
+                {% for tags in current_tags %}
+                    {% if tags['question_id'] == question_id %}
+                        {% for ids in all_tags %}
+                            {% if ids['name'] == tags['name'] %}
+                              <div class="tag">
+                                <form action="/question/{{ question_id }}/tag/{{ ids['id'] }}/delete">
+                                    <div class="tag-content">
+                                      <p>{{ tags['name'] }}</p>
+                                      <!-- <button type="submit">x </button> -->
+                                    </div>
                                 </form>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
+                              </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p>Posted on: {{ question['submission_time'] }}</p>
+          </div>
         </div>
-        {% if question['image'] %}
-        {% set url=url_for('static', filename=question['image']) %}
-            <img src="{{ url }}" width="100">
-        {% endif %}
-        <p>
-            {{ question['message'] }}
-        </p>
-        <small>Posted on: {{ question['submission_time'] }}</small>
-        <hr>
+
 {% endmacro %}

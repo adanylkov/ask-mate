@@ -47,25 +47,27 @@
       <h1>List of questions</h1><br>
         {% for question in questions %}
         <div class="question">
-          <div class="votes">
-              <form action="/question/{{question['id']}}/vote-up" method="post">
-                <button type="submit" id="up" class="material-icons">expand_less</button>
-              </form>
-                {{ question['vote_number'] }}
-              <form action="/question/{{question['id']}}/vote-down" method="post">
-                <button type="submit" id="down" class="material-icons">expand_more</button>
-              </form>
-              <p id="views">{{question["view_number"]}} views</p>
-          </div>
           <div class="summary-content">
             <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
-            <h3>{{question["message"]}}</h3>
-            {% if question['image'] %}
-                {% set url=url_for('static', filename=question['image']) %}
-                    <img src="{{ url }}" width="100">
-            {% endif %}
+            <div class="main-row">
+              <div class="votes">
+                  <form action="/question/{{question['id']}}/vote-up" method="post">
+                    <button type="submit" id="up" class="material-icons">expand_less</button>
+                  </form>
+                    {{ question['vote_number'] }}
+                  <form action="/question/{{question['id']}}/vote-down" method="post">
+                    <button type="submit" id="down" class="material-icons">expand_more</button>
+                  </form>
+                  <p id="views">{{question["view_number"]}} views</p>
+              </div>
+              <h3>{{question["message"]}}</h3>
+            </div>
+            <!-- {% if question['image'] %} -->
+            <!--     {% set url=url_for('static', filename=question['image']) %} -->
+            <!--         <img src="{{ url }}" width="100"> -->
+            <!-- {% endif %} -->
           <div class="summary-stats">
-              <p>Submission time: {{question["submission_time"]}}</p>
+              <p class="submission-time">Submission time: {{question["submission_time"]}}</p>
           </div>
           </div>
         </div>

@@ -3,70 +3,96 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>{{ question.title }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <h2>Question:</h2>
     <div class="question">
         {%- from "question.html" import show_question %}
         {{ show_question(question, current_tags, question_id, all_tags) }}
-    </div>
-    <div class="comments">
-      {% for comment in comments %}
-        {% if comment.question_id and not comment.answer_id %}
-          <small>{{ comment.message }}</small><br>
-          <small>{{ comment.submission_time }}</small>
-          <form action="/comment/{{ comment.id }}/edit" method="get">
-            <input type="submit" value="Edit comment">
-          </form>
-          <form action="/comment/{{ comment.id }}/delete" method="post">
-            <input type="submit" value="Delete comment">
-          </form>
-          <br><br>
-        {% endif %}
-      {% endfor %}
-    </div>
-    {% if answers %}
-    <div class="answers">
-        <h2>Answers:</h2>
-        {% for answer in answers %}
-            <p>{{ answer['message'] }}</p>
-            {% if answer['image'] %}
-                {% set url=url_for('static', filename=answer['image']) %}
-                <img src="{{ url }}" width="100">
-                <br>
-            {% endif %}
-            <div>
-              <form action="/answer/{{  answer['id'] }}/vote-up" method="post">
-                <button type="submit">UP</button>
+      {% if comments %}
+        <hr>
+      {% endif %}
+      <div class="comments">
+        {% for comment in comments %}
+          {% if comment.question_id and not comment.answer_id %}
+          <div class="comment">
+            <small>{{ comment.message }}</small><br>
+            <small>{{ comment.submission_time }}</small>
+            <div class="controls">
+              <form action="/comment/{{ comment.id }}/edit" method="get">
+                <input type="submit" value="edit">
               </form>
-                {{ answer['vote_number'] }}
-              <form action="/answer/{{  answer['id'] }}/vote-down" method="post">
-                <button type="submit">DOWN</button>
+              <form action="/comment/{{ comment.id }}/delete" method="post">
+                <input type="submit" value="delete">
               </form>
             </div>
-            <small>Posted on: {{ answer['submission_time'] }}</small><br>
-            <form action="/answer/{{ answer['id'] }}/new-comment" method="get">
-                <input type="submit" value="Add new comment to answer" />
-            </form><br>
-            <form action="/answer/{{ answer['id'] }}/delete" method="post">
-                <input type="submit" value="Delete the answer" />
-            </form><br>
-            {% for comment in comments %}
-              {% if comment.answer_id == answer.id %}
-                <small>{{ comment.message }}</small><br>
-                <small>{{ comment.submission_time }}</small>
-                <br><br>
-                <form action="/comment/{{ comment.id }}/edit" method="get">
-                  <input type="submit" value="Edit comment">
-                </form>
-                <form action="/comment/{{ comment.id }}/delete" method="post">
-                  <input type="submit" value="Delete comment">
-                </form>
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
+            <hr>
+          </div>
+          {% endif %}
+        {% endfor %}
       </div>
+    </div>
+    {% if answers %}
+          <h2>Answers:</h2>
+          {% for answer in answers %}
+          <div class="answers question">
+              <div class="main-row">
+              <p>{{ answer['message'] }}</p>
+                <div class="votes">
+                  <form action="/answer/{{  answer['id'] }}/vote-up" method="post">
+                    <button type="submit" id="up" class="material-icons">expand_less</button>
+                  </form>
+                    {{ answer['vote_number'] }}
+                  <form action="/answer/{{  answer['id'] }}/vote-down" method="post">
+                    <button type="submit" id="down" class="material-icons">expand_more</button>
+                  </form>
+                </div>
+              {% if answer['image'] %}
+                  {% set url=url_for('static', filename=answer['image']) %}
+                  <img src="{{ url }}" width="100">
+              {% endif %}
+              </div>
+              <div class="summary-stats">
+                <p class="submission_time">Posted on: {{ answer['submission_time'] }}</p><br>
+              </div>
+              <div class="controls">
+                <form action="/answer/{{ answer['id'] }}/new-comment" method="get">
+                    <input type="submit" value="Add new comment to answer" />
+                </form>
+                <form action="/answer/{{ answer['id'] }}/delete" method="post">
+                    <input type="submit" value="Delete the answer" />
+                </form>
+              </div>
+              <hr>
+              <div class="comments">
+                {% for comment in comments %}
+                  {% if comment.answer_id %}
+                  <div class="comment">
+                    <small>{{ comment.message }}</small><br>
+                    <small class="submission_time">{{ comment.submission_time }}</small>
+                    <div class="controls">
+                      <form action="/comment/{{ comment.id }}/edit" method="get">
+                        <input type="submit" value="edit">
+                      </form>
+                      <form action="/comment/{{ comment.id }}/delete" method="post">
+                        <input type="submit" value="delete">
+                      </form>
+                    </div>
+                    <hr>
+                  </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
     {% endif %}
 
     <br>
@@ -104,3 +130,7 @@
 </body>
 
 </html>
+
+
+
+

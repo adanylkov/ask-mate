@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   font-family: 'Noto Sans', sans-serif;
-  background-color: #DED9D1;
+  background-color: #EEF0F0;
 }
 
 .question {
@@ -11,15 +11,29 @@
   width: 80%;
   padding: 1em;
   display: flex;
-  flex-direction: row;
-  flex-flow: nowrap;
-  align-items: baseline;
-  background-color: #FFFCF2;
+  flex-flow: column nowrap;
+  background-color: #FFFFFF;
+  border-bottom: 2px solid darkgrey;
 }
 
 .question > * {
   margin: 0 1em;
 }
+
+.question .main-row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+
+.question .main-row p {
+  flex-grow: 1;
+}
+
+.question .main-row > *{
+  margin: 0 1em;
+}
+
 
 .question .votes {
   order: -1;
@@ -28,11 +42,6 @@
   flex-shrink: 0;
   align-items: center;
   --button_size: 1.5em;
-}
-
-
-.question:last-child {
-  border-bottom: 2px solid darkgrey;
 }
 
 .question #up {
@@ -65,5 +74,78 @@
 .question .summary-stats {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
+  justify-content: space-between;
+  color: #6a737c;
+}
+
+.question .summary-stats .submission-time {
+  text-align: right;
+  flex-grow: 1;
+}
+
+.question .tags {
+  display: flex;
+}
+
+.question .tag {
+  margin: 0 0.3rem;
+}
+
+.question .tags .tag-content p{
+  color: initial;
+  font-size: 0.8rem;
+  background-color: #bee0ec;
+  padding: 0.4rem 1rem;
+  border-radius: 1.2rem;
+  text-align: center;
+}
+
+.question hr {
+  border-color: lightgrey;
+  border-width: 1px;
+  border-radius: 5px;
+  border-style: solid;
+}
+
+.question .comment input {
+  background: none;
+  border: none;
+  color: grey;
+  text-decoration: underline;
+  cursor: pointer;    
+}
+
+.question .comment hr {
+  border-color: #f9f9f9;
+}
+
+.question .comment .controls {
+  display: flex;
+}
+.answers > .controls  {
+  display: flex;
+}
+
+.answers > .controls input[type="submit"] {
+  margin-right: 1rem;
+  background: none;
+  border: none;
+  color: darkgrey;
+  cursor: pointer;    
+}
+
+.answers > .controls input[type="submit"]:hover {
+  color: grey;
+  cursor: pointer;    
+}
+
+.answers p.submission_time {
+  width: 100%;
+  text-align: right;
+}
+
+.answers .comment .submission_time {
+  display: block;
+  color: #6a737c;
+  text-align: right;
 }
