@@ -269,6 +269,15 @@ def add_tag_to_question(cursor, question_id, req_tag_id):
 
 @database_common.connection_handler
 def create_new_tag(cursor, new_tag):
+    query1 = '''
+        SELECT *
+        FROM tag
+    '''
+    cursor.execute(query1)
+    all_tags = cursor.fetchall()
+    for tags in all_tags:
+        if tags['name'] == new_tag:
+            return None
     query = f"INSERT INTO public.tag (name) VALUES ('{new_tag}')"
     cursor.execute(query)
 
