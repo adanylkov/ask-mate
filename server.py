@@ -21,9 +21,9 @@ def allowed_file(filename):
 def display_question(question_id : int):
     if request.method == 'POST':
         req_tag_id = request.values.get('tags-name')
-        new_tag = request.values.get('create-new-tag')
+        get_new_tag = request.values.get('create-new-tag')
         data_manager.add_tag_to_question(question_id, req_tag_id)
-        data_manager.create_new_tag(new_tag)
+        data_manager.create_new_tag(get_new_tag)
     data_manager.remove_none_tags()
     current_tags = data_manager.get_tag_for_question(question_id)
     all_tags = data_manager.get_tags()
@@ -44,8 +44,7 @@ def question_list():
     question_list = data_manager.questions()
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
-
-    question_list.sort(key=lambda question: util.sort_by(question, order_by), reverse=order_direction=='desc') 
+    question_list.sort(key=lambda question: util.sort_by(question, order_by), reverse=order_direction=='desc')
 
     for qst in question_list:
         qst['submission_time'] = util.convert_time(qst['submission_time'])
@@ -137,6 +136,7 @@ def vote_down(question_id):
     updated_vote_number = data_manager.vote_down(vote_number)
     data_manager.vote_update(updated_vote_number, question_id)
     return redirect("/", 301)
+
 
 @app.route('/answer/<int:answer_id>/vote-up', methods = ['POST'])
 def vote_up_answer(answer_id):

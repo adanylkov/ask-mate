@@ -261,7 +261,7 @@ def add_tag_to_question(cursor, question_id, req_tag_id):
                 VALUES ({question_id}, {req_tag_id})'
     try:
         cursor.execute(query)
-    except:
+    except psycopg2.errors.UniqueViolation:
         query = '''DELETE FROM tag
                     WHERE name = 'None' '''
         cursor.execute(query)
