@@ -126,7 +126,21 @@ def add_answer(cursor, message, question_id, image = None):
 @database_common.connection_handler
 def del_question(cursor, question):
     query = """
-    SELECT id, submission_time, vote_number, question_id, message, image FROM answer
+    DELETE
+    FROM question_tag
+    WHERE question_id = %s
+    """
+    cursor.execute(query, (question['id'], ))
+
+    query = """
+    DELETE
+    FROM comment
+    WHERE question_id = %s
+    """
+    cursor.execute(query, (question['id'], ))
+
+    query = """
+    SELECT * FROM answer
     WHERE question_id = %s
     """
     cursor.execute(query, (question['id'], ))
@@ -151,6 +165,12 @@ def del_question(cursor, question):
 def del_answer(cursor, answer):
     delete_image(answer)
     answer_id = answer['id']
+    query = """
+    DELETE
+    FROM comment
+    WHERE answer_id = %s
+    """
+    cursor.execute(query, (answer_id, ))
     query = """
     DELETE 
     FROM answer

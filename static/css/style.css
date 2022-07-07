@@ -139,12 +139,30 @@
   cursor: pointer;    
 }
 
+.question > .controls {
+  display: flex;
+}
+
+.question > .controls input[type="submit"] {
+  margin-right: 1rem;
+  background: none;
+  border: none;
+  color: grey;
+  cursor: pointer;    
+  text-decoration: underline;
+  margin-bottom: 0.7rem;
+}
+
+.question > .controls input[type="submit"]:hover {
+  cursor: pointer;    
+}
+
 .answers p.submission_time {
   width: 100%;
   text-align: right;
 }
 
-.answers .comment .submission_time {
+.comment .submission_time {
   display: block;
   color: #6a737c;
   text-align: right;

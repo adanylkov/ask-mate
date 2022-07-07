@@ -185,7 +185,7 @@ def add_comment(question_id = None, answer_id = None):
                 'answer_id': answer_id,
                 'submission_time': util.make_timestamp()
                 }
-        if not question_id:
+        if question_id is None:
             question_id = data_manager.get_question_id_by_answer_id(answer_id)
             comment['question_id'] = question_id
         data_manager.add_comment(comment)
