@@ -88,7 +88,7 @@
               <hr>
               <div class="comments">
                 {% for comment in comments %}
-                  {% if comment.answer_id is not none %}
+                  {% if comment.answer_id == answer.id %}
                   <div class="comment">
                     <small>{{ comment.message }}</small><br>
                     <small class="submission_time">{{ comment.submission_time }}</small>
