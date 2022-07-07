@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Ask Mate</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
 </head>
 <body> 
 
@@ -30,32 +36,34 @@
         <input type="submit" value="Add a question" />
     </form>
 
-    <h1>List of questions</h1><br>
     
 
     {% if questions %}
+      <h1>List of questions</h1><br>
         {% for question in questions %}
-        <!--id,submission_time,view_number,vote_number,title,message,image-->
-        <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
-        <div>
-          <form action="/question/{{question['id']}}/vote-up" method="post">
-            <button type="submit">UP</button>
-          </form>
-            {{ question['vote_number'] }}
-          <form action="/question/{{question['id']}}/vote-down" method="post">
-            <button type="submit">DOWN</button>
-          </form>
+        <div class="question">
+          <div class="votes">
+              <form action="/question/{{question['id']}}/vote-up" method="post">
+                <button type="submit" id="up" class="material-icons">expand_less</button>
+              </form>
+                {{ question['vote_number'] }}
+              <form action="/question/{{question['id']}}/vote-down" method="post">
+                <button type="submit" id="down" class="material-icons">expand_more</button>
+              </form>
+              <p id="views">{{question["view_number"]}} views</p>
+          </div>
+          <div class="summary-content">
+            <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
+            <h3>{{question["message"]}}</h3>
+            {% if question['image'] %}
+                {% set url=url_for('static', filename=question['image']) %}
+                    <img src="{{ url }}" width="100">
+            {% endif %}
+          <div class="summary-stats">
+              <p>Submission time: {{question["submission_time"]}}</p>
+          </div>
+          </div>
         </div>
-        <h3>{{question["message"]}}</h3>
-        {% if question['image'] %}
-            {% set url=url_for('static', filename=question['image']) %}
-                <img src="{{ url }}" width="100">
-        {% endif %}
-        <p>Submission time: {{question["submission_time"]}}</p>
-        <p>View number: {{question["view_number"]}} Vote number: {{question["vote_number"]}} </p><br>
-        
-
-
         {% endfor %}
         {% else %}
         <p>There are no questions</p>
