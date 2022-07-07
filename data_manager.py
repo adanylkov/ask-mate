@@ -362,4 +362,7 @@ def delete_comment(cursor, comment_id):
 
 @database_common.connection_handler
 def search(cursor, search_for):
-    print(f'{search_for=}')
+    cursor.execute("""SELECT id, submission_time, view_number, vote_number, title, message, image
+                FROM question WHERE question.title ~ %(s_f)s or question.message ~ %(s_f)s""",{'s_f': f"\m{search_for}"})
+    return cursor.fetchall()
+

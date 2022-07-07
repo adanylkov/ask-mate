@@ -215,8 +215,8 @@ def delete_comment(comment_id: int):
 @app.route('/search')
 def search():
     search_for = request.args.get('q')
-    data_manager.search(search_for)
-    return render_template('search.html')
+    search_result = data_manager.search(search_for)
+    return render_template('search.html', search_result=search_result, search_for=search_for)
 
 
 if __name__ == "__main__":

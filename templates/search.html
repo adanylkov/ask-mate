@@ -8,6 +8,29 @@
 
     <h1>Search results:</h1>
 
+    {% if search_result %}
+        {% for question in search_result %}
+        <div class="question">
+          <div class="summary-content">
+            <h2><a href="/question/{{question['id']}}">{{question["title"]}}</a></h2>
+            <h3>{{question["message"]}}</h3>
+            {% if question['image'] %}
+                {% set url=url_for('static', filename=question['image']) %}
+                    <img src="{{ url }}" width="100">
+            {% endif %}
+          <div class="summary-stats">
+              <p>Submission time: {{question["submission_time"]}}</p>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>There are no questions for: {{ search_for }}</p>
+    {% endif %}
+
+
+
+
+
     <form action="/list">
         <input type="submit" value="Return to home" />
     </form>
