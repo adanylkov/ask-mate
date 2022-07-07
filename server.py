@@ -160,6 +160,8 @@ def vote_down_answer(answer_id):
 
 @app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
 def new_tag(question_id):
+    if request.method == 'POST':
+        return redirect(f'/question/{question_id}/new-tag', 301)
     current_tags = data_manager.get_tags()
     data_manager.remove_none_tags()
     return render_template('question-new-tag.html', id=question_id, current_tags=current_tags)
@@ -208,6 +210,13 @@ def edit_comment(comment_id: int):
 def delete_comment(comment_id: int):
     question_id = data_manager.delete_comment(comment_id)
     return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route('/search')
+def search():
+    search_for = request.args.get('q')
+    data_manager.search(search_for)
+    return render_template('search.html')
 
 
 if __name__ == "__main__":

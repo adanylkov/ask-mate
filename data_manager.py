@@ -358,3 +358,8 @@ def delete_comment(cursor, comment_id):
     """
     cursor.execute(query, (comment_id, ))
     return cursor.fetchone()['question_id']
+
+
+@database_common.connection_handler
+def search(cursor, search_for):
+    print(f'{search_for=}')
