@@ -25,7 +25,7 @@ def delete_image(question):
 @database_common.connection_handler
 def get_question_by_id(cursor, id):
     query = """
-        SELECT *
+        SELECT id, submission_time, view_number, vote_number, title, message, image
         FROM question
         WHERE id = %s
         """
@@ -38,7 +38,7 @@ def get_question_by_id(cursor, id):
 @database_common.connection_handler
 def get_answer_by_id(cursor, id):
     query = """
-    SELECT *
+    SELECT id, submission_time, vote_number, question_id, message, image
     FROM answer
     WHERE id = %s
     """
@@ -49,7 +49,7 @@ def get_answer_by_id(cursor, id):
 @database_common.connection_handler
 def answers_by_question_id(cursor, question_id):
     query = """
-    SELECT *
+    SELECT id, submission_time, vote_number, question_id, message, image
     FROM answer
     WHERE question_id = %s
     ORDER BY vote_number DESC
@@ -62,7 +62,7 @@ def answers_by_question_id(cursor, question_id):
 @database_common.connection_handler
 def questions(cursor):
     query = """
-        SELECT *
+        SELECT id, submission_time, view_number, vote_number, title, message, image
         FROM question
         ORDER BY submission_time DESC 
         LIMIT 5
@@ -75,7 +75,7 @@ def questions(cursor):
 @database_common.connection_handler
 def answers(cursor):
     query = """
-        SELECT *
+        SELECT id, submission_time, vote_number, question_id, message, image
         FROM answer
         """
     cursor.execute(query)
@@ -126,7 +126,7 @@ def add_answer(cursor, message, question_id, image = None):
 @database_common.connection_handler
 def del_question(cursor, question):
     query = """
-    SELECT * FROM answer
+    SELECT id, submission_time, vote_number, question_id, message, image FROM answer
     WHERE question_id = %s
     """
     cursor.execute(query, (question['id'], ))
@@ -221,7 +221,7 @@ def update_view_number(cursor, view_number, question_id):
 @database_common.connection_handler
 def get_tags(cursor):
     query = '''
-        SELECT *
+        SELECT id, name
         FROM tag
     '''
     query1 = '''DELETE FROM tag
@@ -261,7 +261,7 @@ def add_tag_to_question(cursor, question_id, req_tag_id):
                 VALUES ({question_id}, {req_tag_id})'
     try:
         cursor.execute(query)
-    except psycopg2.errors.UniqueViolation:
+    except (psycopg2.errors.UniqueViolation, psycopg2.errors.UndefinedColumn):
         query = '''DELETE FROM tag
                     WHERE name = 'None' '''
         cursor.execute(query)
@@ -270,7 +270,7 @@ def add_tag_to_question(cursor, question_id, req_tag_id):
 @database_common.connection_handler
 def create_new_tag(cursor, new_tag):
     query1 = '''
-        SELECT *
+        SELECT id, name
         FROM tag
     '''
     cursor.execute(query1)
@@ -294,7 +294,7 @@ def add_comment(cursor, comment):
 @database_common.connection_handler
 def get_comment_by_id(cursor, comment_id):
     query = """
-    SELECT * 
+    SELECT id, question_id, answer_id, message, submission_time, edited_count 
     FROM comment
     WHERE id = %s
     """
@@ -304,7 +304,7 @@ def get_comment_by_id(cursor, comment_id):
 @database_common.connection_handler
 def get_comments_by_question_id(cursor, question_id):
     query = """
-    SELECT * 
+    SELECT id, question_id, answer_id, message, submission_time, edited_count 
     FROM comment
     WHERE question_id = %s
     ORDER BY id ASC
@@ -317,7 +317,7 @@ def get_comments_by_question_id(cursor, question_id):
 @database_common.connection_handler
 def get_comments_by_answer_id(cursor, answer_id):
     query = """
-    SELECT * 
+    SELECT id, question_id, answer_id, message, submission_time, edited_count 
     FROM comment
     WHERE answer_id = %s
     """
