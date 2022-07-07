@@ -35,7 +35,7 @@ def display_question(question_id : int):
     comments = data_manager.get_comments_by_question_id(question_id)
     for ans in answers: ans['submission_time'] = util.convert_time(ans['submission_time'])
     for com in comments: com['submission_time'] = util.convert_time(com['submission_time'])
-    return render_template("question-template.html", question=question, answers=answers, current_tags=current_tags, question_id=question_id, all_tags=all_tags)
+    return render_template("question-template.html", question=question, answers=answers, current_tags=current_tags, question_id=question_id, all_tags=all_tags, comments=comments)
 
 
 @app.route("/")
