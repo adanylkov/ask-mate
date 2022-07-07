@@ -202,7 +202,8 @@ def edit_comment(comment_id: int):
         comment['edited_count'] = 1 if not comment['edited_count'] else comment['edited_count'] + 1
         data_manager.edit_comment(comment)
         question_id = comment.get('question_id')
-        if not question_id: return redirect(url_for('question_list'))
+        if question_id is None: 
+            question_id = data_manager.get_question_id_by_answer_id(comment.get('answer_id'))
         return redirect(url_for('display_question', question_id=question_id))
 
 
