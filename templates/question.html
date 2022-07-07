@@ -7,7 +7,9 @@
                 {% if tags['question_id'] == question_id %}
                     {% for ids in all_tags %}
                         {% if ids['name'] == tags['name'] %}
-                            {{ tags['name'] }}<a href="/question/{{ question_id }}/tag/{{ ids['id'] }}/delete">x </a>
+                                <form action="/question/{{ question_id }}/tag/{{ ids['id'] }}/delete">
+                                    {{ tags['name'] }}<button type="submit">x </button>
+                                </form>
                         {% endif %}
                     {% endfor %}
                 {% endif %}

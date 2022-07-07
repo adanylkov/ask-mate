@@ -167,7 +167,6 @@ def new_tag(question_id):
 
 @app.route('/question/<int:question_id>/tag/<int:tag_id>/delete')
 def remove_tag_from_question(question_id, tag_id):
-    print('dd')
     data_manager.remove_tag(question_id, tag_id)
     return redirect (f'/question/{question_id}', 301)
 
